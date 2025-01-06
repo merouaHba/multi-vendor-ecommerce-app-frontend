@@ -47,441 +47,444 @@ import CustomerServicePage from "@/pages/policy/help";
 // protect route
 // import ProtectedRoute from "@/components/Auth/ProtectedRoute";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <Suspense
-        fallback={
-          <div style={{ marginTop: "10%" }}>
-            <LottieHandler type="loading" message="Loading please wait..." />
-          </div>
-        }
-      >
-        <MainLayout />
-      </Suspense>
-    ),
-    errorElement: <Error />,
-    children: [
-      {
-        index: true,
-        element: (
-          <PageSuspenseFallback>
-            <Home />
-          </PageSuspenseFallback>
-        ),
-      },
-      {
-        path: "/cart",
-        element: (
-          <PageSuspenseFallback>
-            <Cart />
-          </PageSuspenseFallback>
-        ),
-      },
-      {
-        path: "/wishlist",
-        element: (
-          // <ProtectedRoute>
-          <PageSuspenseFallback>
-            <Wishlist />
-          </PageSuspenseFallback>
-          // </ProtectedRoute>
-        ),
-      },
-      {
-        path: "/checkout",
-        element: (
-          <PageSuspenseFallback>
-            <CheckOut />
-          </PageSuspenseFallback>
-        ),
-      },
-      {
-        path: "/search",
-        element: (
-          <PageSuspenseFallback>
-            <SearchResults />
-          </PageSuspenseFallback>
-        ),
-      },
-      {
-        path: "/categories",
-        element: (
-          <PageSuspenseFallback>
-            <Categories />
-          </PageSuspenseFallback>
-        ),
-      },
-      {
-        path: "/categories/:prefix",
-        element: (
-          <PageSuspenseFallback>
-            <Category />
-          </PageSuspenseFallback>
-        ),
-      },
-      {
-        path: "/products/:prefix",
-        element: (
-          <PageSuspenseFallback>
-            <Product />
-          </PageSuspenseFallback>
-        ),
-      },
-      {
-        path: "/products",
-        element: (
-          <PageSuspenseFallback>
-            <Products />
-          </PageSuspenseFallback>
-        ),
-      },
-      {
-        path: "/policy",
-        element: (
-          <PageSuspenseFallback>
-            <Policy />
-          </PageSuspenseFallback>
-        ),
-      },
-      {
-        path: "/privacy-policy",
-        element: (
-          <PageSuspenseFallback>
-            <PrivacyPolicy />
-          </PageSuspenseFallback>
-        ),
-      },
-      {
-        path: "/terms-conditions",
-        element: (
-          <PageSuspenseFallback>
-            <TermsAndConditions />
-          </PageSuspenseFallback>
-        ),
-      },
-      {
-        path: "/return-refund-policy",
-        element: (
-          <PageSuspenseFallback>
-            <ReturnRefundPolicy />
-          </PageSuspenseFallback>
-        ),
-      },
-      {
-        path: "/shipping-policy",
-        element: (
-          <PageSuspenseFallback>
-            <ShippingPolicy />
-          </PageSuspenseFallback>
-        ),
-      },
-      {
-        path: "/faq",
-        element: (
-          <PageSuspenseFallback>
-            <FAQ />
-          </PageSuspenseFallback>
-        ),
-        
-      },
-      {
-        path: "/help",
-        element: (
-          <PageSuspenseFallback>
-            <CustomerServicePage />
-          </PageSuspenseFallback>
-        ),
-        
-      },
-      // {
-      //   path: "/categories/products/:prefix",
-      //   element: (
-      //     <PageSuspenseFallback>
-      //       <Products />
-      //     </PageSuspenseFallback>
-      //   ),
-      //   loader: ({ params }) => {
-      //     typeof params.prefix
-      //     if (
-      //       typeof params.prefix !== "string" ||
-      //       !/^[a-z]+$/i.test(params.prefix)
-      //     ) {
-      //       throw new Response("Bad Request", {
-      //         statusText: "Category not found",
-      //         status: 400,
-      //       });
-      //     }
-      //     return true;
-      //   },
-      // },
-      {
-        path: "about-us",
-        element: (
-          <PageSuspenseFallback>
-            <AboutUs />
-          </PageSuspenseFallback>
-        ),
-      },
-      {
-        path: "contact-us",
-        element: (
-          <PageSuspenseFallback>
-            <ContactUs />
-          </PageSuspenseFallback>
-        ),
-      },
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: (
+        <Suspense
+          fallback={
+            <div style={{ marginTop: "10%" }}>
+              <LottieHandler type="loading" message="Loading please wait..." />
+            </div>
+          }
+        >
+          <MainLayout />
+        </Suspense>
+      ),
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: (
+            <PageSuspenseFallback>
+              <Home />
+            </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "/cart",
+          element: (
+            <PageSuspenseFallback>
+              <Cart />
+            </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "/wishlist",
+          element: (
+            // <ProtectedRoute>
+            <PageSuspenseFallback>
+              <Wishlist />
+            </PageSuspenseFallback>
+            // </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/checkout",
+          element: (
+            <PageSuspenseFallback>
+              <CheckOut />
+            </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "/search",
+          element: (
+            <PageSuspenseFallback>
+              <SearchResults />
+            </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "/categories",
+          element: (
+            <PageSuspenseFallback>
+              <Categories />
+            </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "/categories/:prefix",
+          element: (
+            <PageSuspenseFallback>
+              <Category />
+            </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "/products/:prefix",
+          element: (
+            <PageSuspenseFallback>
+              <Product />
+            </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "/products",
+          element: (
+            <PageSuspenseFallback>
+              <Products />
+            </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "/policy",
+          element: (
+            <PageSuspenseFallback>
+              <Policy />
+            </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "/privacy-policy",
+          element: (
+            <PageSuspenseFallback>
+              <PrivacyPolicy />
+            </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "/terms-conditions",
+          element: (
+            <PageSuspenseFallback>
+              <TermsAndConditions />
+            </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "/return-refund-policy",
+          element: (
+            <PageSuspenseFallback>
+              <ReturnRefundPolicy />
+            </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "/shipping-policy",
+          element: (
+            <PageSuspenseFallback>
+              <ShippingPolicy />
+            </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "/faq",
+          element: (
+            <PageSuspenseFallback>
+              <FAQ />
+            </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "/help",
+          element: (
+            <PageSuspenseFallback>
+              <CustomerServicePage />
+            </PageSuspenseFallback>
+          ),
+        },
+        // {
+        //   path: "/categories/products/:prefix",
+        //   element: (
+        //     <PageSuspenseFallback>
+        //       <Products />
+        //     </PageSuspenseFallback>
+        //   ),
+        //   loader: ({ params }) => {
+        //     typeof params.prefix
+        //     if (
+        //       typeof params.prefix !== "string" ||
+        //       !/^[a-z]+$/i.test(params.prefix)
+        //     ) {
+        //       throw new Response("Bad Request", {
+        //         statusText: "Category not found",
+        //         status: 400,
+        //       });
+        //     }
+        //     return true;
+        //   },
+        // },
+        {
+          path: "about-us",
+          element: (
+            <PageSuspenseFallback>
+              <AboutUs />
+            </PageSuspenseFallback>
+          ),
+        },
+        {
+          path: "contact-us",
+          element: (
+            <PageSuspenseFallback>
+              <ContactUs />
+            </PageSuspenseFallback>
+          ),
+        },
 
-      {
-        path: "order-tracking",
-        element: (
-          <PageSuspenseFallback>
-            <OrderTracking />
-          </PageSuspenseFallback>
-        ),
-      },
-      // {
-      //   path: "profile",
-      //   element: (
-      //     <ProtectedRoute>
-      //       <PageSuspenseFallback>
-      //         <ProfileLayout />
-      //       </PageSuspenseFallback>
-      //     </ProtectedRoute>
-      //   ),
-      //   children: [
-      //     {
-      //       index: true,
-      //       element: (
-      //         <PageSuspenseFallback>
-      //           <Account />
-      //         </PageSuspenseFallback>
-      //       ),
-      //     },
-      //     {
-      //       path: "orders",
-      //       element: (
-      //         <PageSuspenseFallback>
-      //           <Orders />
-      //         </PageSuspenseFallback>
-      //       ),
-      //     },
-      //   ],
-      // },
-    ],
-  },
+        {
+          path: "order-tracking",
+          element: (
+            <PageSuspenseFallback>
+              <OrderTracking />
+            </PageSuspenseFallback>
+          ),
+        },
+        // {
+        //   path: "profile",
+        //   element: (
+        //     <ProtectedRoute>
+        //       <PageSuspenseFallback>
+        //         <ProfileLayout />
+        //       </PageSuspenseFallback>
+        //     </ProtectedRoute>
+        //   ),
+        //   children: [
+        //     {
+        //       index: true,
+        //       element: (
+        //         <PageSuspenseFallback>
+        //           <Account />
+        //         </PageSuspenseFallback>
+        //       ),
+        //     },
+        //     {
+        //       path: "orders",
+        //       element: (
+        //         <PageSuspenseFallback>
+        //           <Orders />
+        //         </PageSuspenseFallback>
+        //       ),
+        //     },
+        //   ],
+        // },
+      ],
+    },
+    {
+      element: <Outlet />,
+      path: "/login",
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: (
+            <PageSuspenseFallback>
+              <Login />
+            </PageSuspenseFallback>
+          ),
+        },
+      ],
+    },
+    {
+      element: <Outlet />,
+      path: "/register",
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: (
+            <PageSuspenseFallback>
+              <Register />
+            </PageSuspenseFallback>
+          ),
+        },
+      ],
+    },
+    {
+      element: <Outlet />,
+      path: "/forget-password",
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: (
+            <PageSuspenseFallback>
+              <ForgetPassword />
+            </PageSuspenseFallback>
+          ),
+        },
+      ],
+    },
+    {
+      element: <Outlet />,
+      path: "/reset-password",
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: (
+            <PageSuspenseFallback>
+              <ResetPassword />
+            </PageSuspenseFallback>
+          ),
+        },
+      ],
+    },
+    {
+      element: <Outlet />,
+      path: "/email-verification",
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: (
+            <PageSuspenseFallback>
+              <EmailVerification />
+            </PageSuspenseFallback>
+          ),
+        },
+      ],
+    },
+    {
+      element: <Outlet />,
+      path: "/resend-verification",
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: (
+            <PageSuspenseFallback>
+              <ResendVerification />
+            </PageSuspenseFallback>
+          ),
+        },
+      ],
+    },
+    {
+      element: <Outlet />,
+      path: "/seller/register",
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: (
+            <PageSuspenseFallback>
+              <SellerRegistration />
+            </PageSuspenseFallback>
+          ),
+        },
+      ],
+    },
+    {
+      element: <Outlet />,
+      path: "/seller/login",
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: (
+            <PageSuspenseFallback>
+              <SellerLogin />
+            </PageSuspenseFallback>
+          ),
+        },
+      ],
+    },
+    {
+      element: <Outlet />,
+      path: "/seller/dashboard",
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: (
+            <PageSuspenseFallback>
+              <SellerDashboard />
+            </PageSuspenseFallback>
+          ),
+        },
+      ],
+    },
+    {
+      element: <Outlet />,
+      path: "/seller/products/add",
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: (
+            <PageSuspenseFallback>
+              <ProductForm onSubmit={() => {}} mode={"add"} />
+            </PageSuspenseFallback>
+          ),
+        },
+      ],
+    },
+    {
+      element: <Outlet />,
+      path: "/seller/products/update",
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: (
+            <PageSuspenseFallback>
+              <ProductForm onSubmit={() => {}} mode={"update"} />
+            </PageSuspenseFallback>
+          ),
+        },
+      ],
+    },
+    {
+      element: <Outlet />,
+      path: "/seller/orders",
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: (
+            <PageSuspenseFallback>
+              <OrderManagement />
+            </PageSuspenseFallback>
+          ),
+        },
+      ],
+    },
+    {
+      element: <Outlet />,
+      path: "/seller/orders/:id",
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: (
+            <PageSuspenseFallback>
+              <OrderDetails />
+            </PageSuspenseFallback>
+          ),
+        },
+      ],
+    },
+    {
+      element: <Outlet />,
+      path: "/profile",
+      errorElement: <Error />,
+      children: [
+        {
+          index: true,
+          element: (
+            <PageSuspenseFallback>
+              <UserDashboard />
+            </PageSuspenseFallback>
+          ),
+        },
+      ],
+    },
+  ],
   {
-    element: <Outlet />,
-    path: "/login",
-    errorElement: <Error />,
-    children: [
-      {
-        index: true,
-        element: (
-          <PageSuspenseFallback>
-            <Login />
-          </PageSuspenseFallback>
-        ),
-      },
-    ],
-  },
-  {
-    element: <Outlet />,
-    path: "/register",
-    errorElement: <Error />,
-    children: [
-      {
-        index: true,
-        element: (
-          <PageSuspenseFallback>
-            <Register />
-          </PageSuspenseFallback>
-        ),
-      },
-    ],
-  },
-  {
-    element: <Outlet />,
-    path: "/forget-password",
-    errorElement: <Error />,
-    children: [
-      {
-        index: true,
-        element: (
-          <PageSuspenseFallback>
-            <ForgetPassword />
-          </PageSuspenseFallback>
-        ),
-      },
-    ],
-  },
-  {
-    element: <Outlet />,
-    path: "/reset-password",
-    errorElement: <Error />,
-    children: [
-      {
-        index: true,
-        element: (
-          <PageSuspenseFallback>
-            <ResetPassword />
-          </PageSuspenseFallback>
-        ),
-      },
-    ],
-  },
-  {
-    element: <Outlet />,
-    path: "/email-verification",
-    errorElement: <Error />,
-    children: [
-      {
-        index: true,
-        element: (
-          <PageSuspenseFallback>
-            <EmailVerification />
-          </PageSuspenseFallback>
-        ),
-      },
-    ],
-  },
-  {
-    element: <Outlet />,
-    path: "/resend-verification",
-    errorElement: <Error />,
-    children: [
-      {
-        index: true,
-        element: (
-          <PageSuspenseFallback>
-            <ResendVerification />
-          </PageSuspenseFallback>
-        ),
-      },
-    ],
-  },
-  {
-    element: <Outlet />,
-    path: "/seller/register",
-    errorElement: <Error />,
-    children: [
-      {
-        index: true,
-        element: (
-          <PageSuspenseFallback>
-            <SellerRegistration />
-          </PageSuspenseFallback>
-        ),
-      },
-    ],
-  },
-  {
-    element: <Outlet />,
-    path: "/seller/login",
-    errorElement: <Error />,
-    children: [
-      {
-        index: true,
-        element: (
-          <PageSuspenseFallback>
-            <SellerLogin />
-          </PageSuspenseFallback>
-        ),
-      },
-    ],
-  },
-  {
-    element: <Outlet />,
-    path: "/seller/dashboard",
-    errorElement: <Error />,
-    children: [
-      {
-        index: true,
-        element: (
-          <PageSuspenseFallback>
-            <SellerDashboard />
-          </PageSuspenseFallback>
-        ),
-      },
-    ],
-  },
-  {
-    element: <Outlet />,
-    path: "/seller/products/add",
-    errorElement: <Error />,
-    children: [
-      {
-        index: true,
-        element: (
-          <PageSuspenseFallback>
-            <ProductForm onSubmit={() => {}} mode={"add"} />
-          </PageSuspenseFallback>
-        ),
-      },
-    ],
-  },
-  {
-    element: <Outlet />,
-    path: "/seller/products/update",
-    errorElement: <Error />,
-    children: [
-      {
-        index: true,
-        element: (
-          <PageSuspenseFallback>
-            <ProductForm onSubmit={() => {}} mode={"update"} />
-          </PageSuspenseFallback>
-        ),
-      },
-    ],
-  },
-  {
-    element: <Outlet />,
-    path: "/seller/orders",
-    errorElement: <Error />,
-    children: [
-      {
-        index: true,
-        element: (
-          <PageSuspenseFallback>
-            <OrderManagement />
-          </PageSuspenseFallback>
-        ),
-      }
-    ],
-  },
-  {
-    element: <Outlet />,
-    path: "/seller/orders/:id",
-    errorElement: <Error />,
-    children: [
-      {
-        index: true,
-        element: (
-          <PageSuspenseFallback>
-            <OrderDetails />
-          </PageSuspenseFallback>
-        ),
-      },
-    ],
-  },
-  {
-    element: <Outlet />,
-    path: "/profile",
-    errorElement: <Error />,
-    children: [
-      {
-        index: true,
-        element: (
-          <PageSuspenseFallback>
-            <UserDashboard />
-          </PageSuspenseFallback>
-        ),
-      },
-    ],
-  },
-]);
+    basename: "multi-vendor-ecommerce-app-frontend",
+  }
+);
 
 const AppRouter = () => {
   return <RouterProvider router={router} />;
