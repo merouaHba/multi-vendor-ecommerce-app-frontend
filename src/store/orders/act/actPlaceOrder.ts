@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import axiosErrorHandler from "@/services/utils/axiosErrorHandler";
+import axiosErrorHandler from "@/utils/axiosErrorHandler";
 import { RootState } from "@/store/index";
 
 const actPlaceOrder = createAsyncThunk(

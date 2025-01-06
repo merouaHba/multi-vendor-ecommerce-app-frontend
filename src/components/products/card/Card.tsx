@@ -306,3 +306,180 @@ const ProductCard = () => {
 };
 
 export default ProductCard;
+
+
+// import React from "react";
+// import { Heart, ShoppingCart, Trash2, Star } from "lucide-react";
+
+// const ProductCard = ({ variant = "home", product }) => {
+//   // Sample product data structure for demonstration
+//   const defaultProduct = {
+//     id: 1,
+//     title: "Premium Cotton T-Shirt",
+//     brand: "Fashion Brand",
+//     price: 29.99,
+//     originalPrice: 39.99,
+//     rating: 4.5,
+//     reviews: 128,
+//     image: Image,
+//     vendorName: "Fashion Store",
+//     stockStatus: "In Stock",
+//     ...product,
+//   };
+
+//   // Common rating component
+//   const RatingComponent = () => (
+//     <div className="flex items-center gap-1">
+//       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+//       <span className="text-sm font-medium">{defaultProduct.rating}</span>
+//       <span className="text-sm text-gray-500">({defaultProduct.reviews})</span>
+//     </div>
+//   );
+
+//   // Common price component
+//   const PriceComponent = () => (
+//     <div className="flex items-baseline gap-2">
+//       <span className="text-lg font-bold">${defaultProduct.price}</span>
+//       {defaultProduct.originalPrice && (
+//         <span className="text-sm text-gray-500 line-through">
+//           ${defaultProduct.originalPrice}
+//         </span>
+//       )}
+//     </div>
+//   );
+
+//   // Variant-specific layouts
+//   const variants = {
+//     // Home page variant - Compact with essential info
+//     home: (
+//       <div className="group relative bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+//         {/* Wishlist button */}
+//         <button className="absolute top-2 right-2 p-1.5 rounded-full bg-white/80 hover:bg-white">
+//           <Heart className="w-5 h-5 text-gray-600 hover:text-red-500" />
+//         </button>
+
+//         {/* Image */}
+//         <div className="aspect-[3/4] relative overflow-hidden rounded-t-lg">
+//           <img
+//             src={defaultProduct.image}
+//             alt={defaultProduct.title}
+//             className="object-cover w-full h-full group-hover:scale-105 transition-transform"
+//           />
+//         </div>
+
+//         {/* Content */}
+//         <div className="p-4">
+//           <div className="text-sm text-gray-500 mb-1">
+//             {defaultProduct.brand}
+//           </div>
+//           <h3 className="font-medium text-gray-900 mb-1 line-clamp-2">
+//             {defaultProduct.title}
+//           </h3>
+//           <PriceComponent />
+//           <div className="mt-2">
+//             <RatingComponent />
+//           </div>
+
+//           {/* Quick add button - appears on hover */}
+//           <button className="mt-3 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 opacity-0 group-hover:opacity-100 transition-opacity">
+//             Add to Cart
+//           </button>
+//         </div>
+//       </div>
+//     ),
+
+//     // Cart page variant - Horizontal layout with quantity controls
+//     cart: (
+//       <div className="flex gap-4 bg-white p-4 rounded-lg shadow-sm">
+//         <div className="w-32 h-32 flex-shrink-0">
+//           <img
+//             src={defaultProduct.image}
+//             alt={defaultProduct.title}
+//             className="w-full h-full object-cover rounded-md"
+//           />
+//         </div>
+
+//         <div className="flex-grow">
+//           <div className="flex justify-between">
+//             <div>
+//               <div className="text-sm text-gray-500">
+//                 {defaultProduct.brand}
+//               </div>
+//               <h3 className="font-medium text-gray-900">
+//                 {defaultProduct.title}
+//               </h3>
+//               <div className="text-sm text-gray-500 mt-1">
+//                 Sold by: {defaultProduct.vendorName}
+//               </div>
+//             </div>
+//             <div className="text-right">
+//               <PriceComponent />
+//               <div className="text-sm text-green-600 mt-1">
+//                 {defaultProduct.stockStatus}
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="flex items-center justify-between mt-4">
+//             <div className="flex items-center gap-4">
+//               <div className="flex items-center border rounded">
+//                 <button className="px-3 py-1 hover:bg-gray-100">-</button>
+//                 <span className="px-3 py-1 border-x">1</span>
+//                 <button className="px-3 py-1 hover:bg-gray-100">+</button>
+//               </div>
+//               <button className="text-red-500 hover:text-red-600 flex items-center gap-1">
+//                 <Trash2 className="w-4 h-4" />
+//                 Remove
+//               </button>
+//             </div>
+
+//             <button className="text-blue-600 hover:text-blue-700 flex items-center gap-1">
+//               <Heart className="w-4 h-4" />
+//               Save for Later
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     ),
+
+//     // Wishlist variant - Similar to home but with different actions
+//     wishlist: (
+//       <div className="relative bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+//         {/* Remove from wishlist button */}
+//         <button className="absolute top-2 right-2 p-1.5 rounded-full bg-white/80 hover:bg-white">
+//           <Trash2 className="w-5 h-5 text-gray-600 hover:text-red-500" />
+//         </button>
+
+//         <div className="aspect-[3/4] relative overflow-hidden rounded-t-lg">
+//           <img
+//             src={defaultProduct.image}
+//             alt={defaultProduct.title}
+//             className="object-cover w-full h-full"
+//           />
+//         </div>
+
+//         <div className="p-4">
+//           <div className="text-sm text-gray-500 mb-1">
+//             {defaultProduct.brand}
+//           </div>
+//           <h3 className="font-medium text-gray-900 mb-1 line-clamp-2">
+//             {defaultProduct.title}
+//           </h3>
+//           <PriceComponent />
+//           <div className="mt-2">
+//             <RatingComponent />
+//           </div>
+
+//           <button className="mt-3 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 flex items-center justify-center gap-2">
+//             <ShoppingCart className="w-4 h-4" />
+//             Move to Cart
+//           </button>
+//         </div>
+//       </div>
+//     ),
+//   };
+
+//   return variants[variant] || variants.home;
+// };
+
+// export default ProductCard;

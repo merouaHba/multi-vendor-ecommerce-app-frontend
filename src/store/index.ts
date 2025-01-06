@@ -40,7 +40,7 @@ const rootReducer = combineReducers({
   categories,
   products,
   cart: persistReducer(cartPersistConfig, cart),
-  wishlist: wishlist,
+  wishlist,
   orders,
 });
 

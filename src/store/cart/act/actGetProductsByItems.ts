@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "@/store";
 import axios from "axios";
-import { axiosErrorHandler } from "@/services/utils";
+import { axiosErrorHandler } from "@/utils";
 import { TProduct } from "@/types";
 
 type TResponse = TProduct[];
