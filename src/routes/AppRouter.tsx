@@ -480,10 +480,7 @@ const router = createBrowserRouter(
         },
       ],
     },
-  ],
-  {
-    basename: "/multi-vendor-ecommerce-app-frontend",
-  }
+  ]
 );
 
 const AppRouter = () => {
