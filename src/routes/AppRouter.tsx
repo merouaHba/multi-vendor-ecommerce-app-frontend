@@ -302,7 +302,7 @@ const router = createBrowserRouter(
     },
     {
       element: <Outlet />,
-      path: "/forget-password",
+      path: "/forgot-password",
       errorElement: <Error />,
       children: [
         {
@@ -332,7 +332,7 @@ const router = createBrowserRouter(
     },
     {
       element: <Outlet />,
-      path: "/email-verification",
+      path: "/email-verification/:token",
       errorElement: <Error />,
       children: [
         {

@@ -20,13 +20,15 @@ import orders from "./orders/ordersSlice";
 const rootPersistConfig = {
   key: "root",
   storage,
-  whitelist: ["cart", "auth"],
+  whitelist: ["cart"],
+  blacklist: ["auth"],
 };
 
 const authPersistConfig = {
   key: "auth",
   storage,
-  whiteList: ["user", "accessToken"],
+  whitelist: ["user", "accessToken"],
+  blacklist: ["loading","error"],
 };
 
 const cartPersistConfig = {

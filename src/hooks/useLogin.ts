@@ -1,17 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { actAuthLogin, resetUI } from "@/store/auth/authSlice";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInSchema, signInType } from "@/validations/signInSchema";
+import { toast } from "react-toastify";
 
 const useLogin = (role: "user" | "seller") => {
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
-
-  // const [searchParams, setSearchParams] = useSearchParams();
+const [unverifiedEmail, setunverifiedEmail] = useState("");
 
   const { error, loading, accessToken } = useAppSelector((state) => state.auth);
 
@@ -26,21 +26,34 @@ const useLogin = (role: "user" | "seller") => {
 
   const submitForm: SubmitHandler<signInType> = async (data) => {
      console.log("Form submitted:", data);
-    // if (searchParams.get("message")) {
-    //   setSearchParams("");
-    // }
+  
     const { email, password } = data;
 
     dispatch(actAuthLogin({role, email, password }))
       .unwrap()
       .then(() => {
         navigate("/");
-      });
+
+      }).catch((error) => {
+        if (error === "Account not verified") {
+setunverifiedEmail(email);
+              }
+                toast.error(error, {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: false,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored",
+                });
+            });
   };
 
   useEffect(() => {
     return () => {
-      // dispatch(resetUI());
+      dispatch(resetUI());
     };
   }, [dispatch]);
 
@@ -49,7 +62,7 @@ const useLogin = (role: "user" | "seller") => {
     loading,
     accessToken,
     formErrors,
-    // searchParams,
+    unverifiedEmail,
     register,
     handleSubmit,
     submitForm,

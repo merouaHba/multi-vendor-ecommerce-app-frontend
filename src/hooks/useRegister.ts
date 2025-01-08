@@ -1,15 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { actAuthRegister } from "@/store/auth/authSlice";
-import { useNavigate } from "react-router-dom";
+import { actAuthRegister, resetUI } from "@/store/auth/authSlice";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema, signUpType } from "@/validations/signUpSchema";
+import { toast } from "react-toastify";
 
 const useRegister = () => {
   const dispatch = useAppDispatch();
-
-  const navigate = useNavigate();
+const [email,setEmail] = useState('')
+ 
 
   const { loading, error, accessToken } = useAppSelector((state) => state.auth);
 
@@ -18,6 +18,7 @@ const useRegister = () => {
     handleSubmit,
     // getFieldState,
     // trigger,
+    reset,
     formState: { errors: formErrors },
   } = useForm<signUpType>({
     mode: "onBlur",
@@ -29,35 +30,31 @@ const useRegister = () => {
     dispatch(actAuthRegister({ firstname, lastname, email, password }))
       .unwrap() // to confirm that the dispatch finich 
       .then(() => {
-        navigate("/login?message=account_created");
+         setEmail(email);
+        reset()
+      }).catch((error) => {
+  toast.error(error, {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+  });
       });
+     
   };
+const resetRegistration = () => {
+  dispatch(resetUI());
+  reset();
+}
 
-  // const {
-  //   emailAvailabilityStatus,
-  //   enteredEmail,
-  //   checkEmailAvailability,
-  //   resetCheckEmailAvailability,
-  // } = useCheckEmailAvailability();
-
-  // const emailOnBlurHandler = async (e: React.FocusEvent<HTMLInputElement>) => {
-  //   await trigger("email");
-  //   const value = e.target.value;
-  //   const { isDirty, invalid } = getFieldState("email");
-
-  //   // if (isDirty && !invalid && enteredEmail !== value) {
-  //   //   // checking
-  //   //   checkEmailAvailability(value);
-  //   // }
-
-  //   // if (isDirty && invalid && enteredEmail) {
-  //   //   resetCheckEmailAvailability();
-  //   // }
-  // };
 
   useEffect(() => {
     return () => {
-      // dispatch(resetUI());
+      dispatch(resetUI());
     };
   }, [dispatch]);
 
@@ -66,11 +63,11 @@ const useRegister = () => {
     error,
     accessToken,
     formErrors,
-    // emailAvailabilityStatus,
+    email,
     submitForm,
     register,
     handleSubmit,
-    // emailOnBlurHandler,
+    resetRegistration,
   };
 };
 
