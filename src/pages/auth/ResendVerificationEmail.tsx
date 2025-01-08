@@ -1,159 +1,174 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter,
+  CardDescription,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Mail, Loader2, CheckCircle2, XCircle, ArrowLeft } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import FormInput from "@/components/form/formInput";
+import { useForm } from "react-hook-form";
+import { isAxiosError } from "axios";
+import { axiosErrorHandler } from "@/utils";
+import { toast } from "react-toastify";
+import axios from "@/services/api/axios.config";
 
 const ResendVerification = () => {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("idle"); // idle, submitting, success, error
-  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
 
-  const validateEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      email: "",
+    },
+  });
+
+  useEffect(() => {
+    // Load countdown from localStorage when component mounts
+    const savedCountdown = localStorage.getItem("emailVerificationCountdown");
+    const savedTimestamp = localStorage.getItem("emailVerificationTimestamp");
+
+    if (savedCountdown && savedTimestamp) {
+      const elapsedTime = Math.floor(
+        (Date.now() - parseInt(savedTimestamp)) / 1000
+      );
+      const remainingTime = Math.max(0, parseInt(savedCountdown) - elapsedTime);
+
+      if (remainingTime > 0) {
+        setCountdown(remainingTime);
+        startCountdown(remainingTime);
+      }
+    }
+  }, []);
+
+  const startCountdown = (duration: number) => {
+    setCountdown(duration);
+    localStorage.setItem("emailVerificationCountdown", duration.toString());
+    localStorage.setItem("emailVerificationTimestamp", Date.now().toString());
+
+    const timer = setInterval(() => {
+      setCountdown((prevCount) => {
+        const newCount = prevCount - 1;
+        if (newCount <= 0) {
+          clearInterval(timer);
+          localStorage.removeItem("emailVerificationCountdown");
+          localStorage.removeItem("emailVerificationTimestamp");
+          return 0;
+        }
+        return newCount;
+      });
+    }, 1000);
+
+    return timer;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  type TFormData = {
+    email: string;
+  };
 
-    if (!validateEmail(email)) {
-      setStatus("error");
-      setMessage("Please enter a valid email address");
-      return;
-    }
-
-    setStatus("submitting");
-
+  const onSubmit = async (formData: TFormData) => {
+    setIsLoading(true);
     try {
-      // Simulate API call
-      // In real implementation, you would make an API call like:
-      // await axios.post('/api/resend-verification', { email })
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const res = await axios.post("/auth/resend-verification-email", formData);
 
-      setStatus("success");
-      setMessage("Verification email has been sent successfully!");
-      setCountdown(60);
+      toast.success(res.data.msg, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
 
-      // Start countdown timer
-      const timer = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
+      // Start 60-second countdown after successful email send
+      startCountdown(60);
     } catch (error) {
-      setStatus("error");
-      setMessage("Failed to send verification email. Please try again.");
-    }
-  };
-
-  const renderStatusAlert = () => {
-    if (status === "success") {
-      return (
-        <Alert className="bg-green-50 border-green-200 mb-4">
-          <CheckCircle2 className="h-5 w-5 text-green-500" />
-          <AlertDescription className="text-green-800">
-            {message}
-          </AlertDescription>
-        </Alert>
+      toast.error(
+        isAxiosError(error)
+          ? axiosErrorHandler(error)
+          : "Could not send verification email. Please try again.",
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        }
       );
+    } finally {
+      setIsLoading(false);
     }
-
-    if (status === "error") {
-      return (
-        <Alert className="bg-red-50 border-red-200 mb-4">
-          <XCircle className="h-5 w-5 text-red-500" />
-          <AlertDescription className="text-red-800">
-            {message}
-          </AlertDescription>
-        </Alert>
-      );
-    }
-
-    return null;
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <div className="flex items-start mb-2">
-            <Mail className="h-8 w-8 text-blue-500 mr-2" />
-            <div>
-              <CardTitle>Resend Verification Email</CardTitle>
-              <CardDescription className="mt-2">
-                Enter your email address and we'll send you a new verification
-                link
-              </CardDescription>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="max-w-md w-full mx-auto">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold text-center text-indigo-600">
+            Verify your email
+          </CardTitle>
+          <CardDescription className="text-center">
+            Enter your email to receive a verification link
+          </CardDescription>
         </CardHeader>
 
         <CardContent>
-          {renderStatusAlert()}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <FormInput
+              id={register("email").name}
+              label="Email address"
+              type="email"
+              disabled={countdown > 0}
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Invalid email address",
+                },
+              })}
+              error={errors.email?.message}
+            />
 
-          <form onSubmit={handleSubmit}>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Email address
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={status === "submitting" || countdown > 0}
-                  className="w-full"
-                />
-              </div>
+            <Button
+              type="submit"
+              disabled={isLoading || countdown > 0}
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white h-11"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Sending link...
+                </>
+              ) : countdown > 0 ? (
+                `Resend in ${countdown}s`
+              ) : (
+                "Send verification link"
+              )}
+            </Button>
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={status === "submitting" || countdown > 0}
+            <p className="text-center text-sm text-gray-600">
+              Remember your password?{" "}
+              <Link
+                to="/login"
+                className="text-indigo-600 hover:text-indigo-500 font-medium"
               >
-                {status === "submitting" ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    Sending...
-                  </>
-                ) : countdown > 0 ? (
-                  `Resend in ${countdown}s`
-                ) : (
-                  "Send Verification Email"
-                )}
-              </Button>
-            </div>
+                Sign in
+              </Link>
+            </p>
           </form>
         </CardContent>
-
-        <CardFooter className="flex justify-center border-t pt-6">
-          <Button
-            variant="ghost"
-            onClick={() => (window.location.href = "/login")}
-            className="text-sm"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Login
-          </Button>
-        </CardFooter>
       </Card>
     </div>
   );
