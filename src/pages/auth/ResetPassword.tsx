@@ -81,7 +81,9 @@ const ResetPasswordSuccess = ({ countdown }: { countdown: number }) => (
   </div>
 );
 
-const TokenNotFound = () => (
+const TokenNotFound = () => {
+   const navigate = useNavigate();
+  return(
   <div className="space-y-6 py-6">
     <div className="flex flex-col items-center justify-center text-center space-y-4">
       <div className="h-12 w-12 rounded-full bg-yellow-100 flex items-center justify-center">
@@ -100,7 +102,7 @@ const TokenNotFound = () => (
 
     <div className="space-y-4">
       <Button
-        onClick={() => (window.location.href = "/forgot-password")}
+        onClick={() =>navigate( "/forgot-password")}
         className="w-full space-x-2"
       >
         <Mail className="h-4 w-4" />
@@ -122,7 +124,7 @@ const TokenNotFound = () => (
       </div>
     </div>
   </div>
-);
+)};
 
 
 
