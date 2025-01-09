@@ -332,7 +332,7 @@ const router = createBrowserRouter(
     },
     {
       element: <Outlet />,
-      path: "/email-verification/:token",
+      path: "/email-verification",
       errorElement: <Error />,
       children: [
         {
