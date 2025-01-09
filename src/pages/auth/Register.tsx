@@ -36,7 +36,10 @@ import RegistrationConfirmation from "@/components/form/RegistrationConfirmation
      submitForm,
      register,
      handleSubmit,
-   } = useRegister();
+     GoogleOAuth,
+     FacebookOAuth,
+     AppleOAuth,
+   } = useRegister("user");
 
    if (accessToken) {
      return <Navigate to="/" />;
@@ -60,9 +63,7 @@ import RegistrationConfirmation from "@/components/form/RegistrationConfirmation
            <div className="grid grid-cols-1 gap-4">
              <OAuthButton
                icon={<GoogleIcon />}
-               onClick={() => {
-                 /* Handle Google OAuth */
-               }}
+               onClick={GoogleOAuth}
                className="hover:bg-gray-50 hover:border-gray-400"
              >
                Continue with Google
@@ -70,9 +71,7 @@ import RegistrationConfirmation from "@/components/form/RegistrationConfirmation
 
              <OAuthButton
                icon={<FacebookIcon />}
-               onClick={() => {
-                 /* Handle Facebook OAuth */
-               }}
+               onClick={FacebookOAuth}
                className="hover:bg-blue-50 hover:border-blue-400"
              >
                Continue with Facebook
@@ -80,9 +79,7 @@ import RegistrationConfirmation from "@/components/form/RegistrationConfirmation
 
              <OAuthButton
                icon={<AppleIcon />}
-               onClick={() => {
-                 /* Handle Apple OAuth */
-               }}
+               onClick={AppleOAuth}
                className="hover:bg-gray-900 hover:text-white hover:border-gray-900"
              >
                Continue with Apple

@@ -19,13 +19,15 @@ import OAuthButton from "@/components/common/SocialButton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
  const BuyerLogin = () => {
 const {
-  // error,
   loading,
   accessToken,
   formErrors,
   unverifiedEmail,
   register,
   handleSubmit,
+  GoogleOAuth,
+  FacebookOAuth,
+  AppleOAuth,
   submitForm,
 } = useLogin("user");
   
@@ -45,12 +47,9 @@ if (accessToken) {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 gap-4">
-        
             <OAuthButton
               icon={<GoogleIcon />}
-              onClick={() => {
-                /* Handle Google OAuth */
-              }}
+              onClick={GoogleOAuth}
               className="hover:bg-gray-50 hover:border-gray-400"
             >
               Continue with Google
@@ -58,9 +57,7 @@ if (accessToken) {
 
             <OAuthButton
               icon={<FacebookIcon />}
-              onClick={() => {
-                /* Handle Facebook OAuth */
-              }}
+              onClick={ FacebookOAuth}
               className="hover:bg-blue-50 hover:border-blue-400"
             >
               Continue with Facebook
@@ -68,9 +65,7 @@ if (accessToken) {
 
             <OAuthButton
               icon={<AppleIcon />}
-              onClick={() => {
-                /* Handle Apple OAuth */
-              }}
+              onClick={AppleOAuth}
               className="hover:bg-gray-900 hover:text-white hover:border-gray-900"
             >
               Continue with Apple

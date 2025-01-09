@@ -5,19 +5,15 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema, signUpType } from "@/validations/signUpSchema";
 import { toast } from "react-toastify";
-
-const useRegister = () => {
+const useRegister = (role: "user" | "seller") => {
   const dispatch = useAppDispatch();
-const [email,setEmail] = useState('')
- 
+  const [email, setEmail] = useState("");
 
   const { loading, error, accessToken } = useAppSelector((state) => state.auth);
 
   const {
     register,
     handleSubmit,
-    // getFieldState,
-    // trigger,
     reset,
     formState: { errors: formErrors },
   } = useForm<signUpType>({
@@ -28,30 +24,51 @@ const [email,setEmail] = useState('')
   const submitForm: SubmitHandler<signUpType> = async (data) => {
     const { firstname, lastname, email, password } = data;
     dispatch(actAuthRegister({ firstname, lastname, email, password }))
-      .unwrap() // to confirm that the dispatch finich 
+      .unwrap() // to confirm that the dispatch finich
       .then(() => {
-         setEmail(email);
-        reset()
-      }).catch((error) => {
-  toast.error(error, {
-    position: "top-right",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: false,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "colored",
-  });
+        setEmail(email);
+        reset();
+      })
+      .catch((error) => {
+        toast.error(error, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       });
-     
   };
-const resetRegistration = () => {
-  dispatch(resetUI());
-  reset();
-}
+  const resetRegistration = () => {
+    dispatch(resetUI());
+    reset();
+  };
 
+ 
+  const GoogleOAuth = async () => {
+    const baseUrl = import.meta.env.VITE_API_URL;
+    window.location.href = `${baseUrl}/auth/google?role=${role} `;
+  };
 
+  const FacebookOAuth = () => {
+    const baseUrl = import.meta.env.VITE_API_URL;
+    window.location.href = `${baseUrl}/auth/facebook?role=${role} `;
+  };
+  const AppleOAuth = () => {
+    toast.warn("This feature is not available yet", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+  };
   useEffect(() => {
     return () => {
       dispatch(resetUI());
@@ -67,6 +84,9 @@ const resetRegistration = () => {
     submitForm,
     register,
     handleSubmit,
+    GoogleOAuth,
+    FacebookOAuth,
+    AppleOAuth,
     resetRegistration,
   };
 };

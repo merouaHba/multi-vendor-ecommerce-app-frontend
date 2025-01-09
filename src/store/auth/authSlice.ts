@@ -21,6 +21,10 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    authLogin: (state, action) => {
+      state.user = action.payload.user;
+      state.accessToken = action.payload.accessToken;
+    },
     resetUI: (state) => {
       state.loading = "idle";
       state.error = null;
@@ -55,7 +59,7 @@ const authSlice = createSlice({
       state.loading = "succeeded";
       state.accessToken = action.payload.accessToken;
       state.user = action.payload.user;
-      localStorage.setItem('accessToken', action.payload.accessToken);
+      localStorage.setItem("accessToken", action.payload.accessToken);
     });
     builder.addCase(actAuthLogin.rejected, (state, action) => {
       state.loading = "failed";
@@ -67,5 +71,5 @@ const authSlice = createSlice({
 });
 
 export { actAuthRegister, actAuthLogin };
-export const { resetUI, authLogout } = authSlice.actions;
+export const { resetUI, authLogout, authLogin } = authSlice.actions;
 export default authSlice.reducer;
