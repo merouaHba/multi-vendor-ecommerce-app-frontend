@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import {
@@ -10,155 +10,225 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import FormInput from "@/components/form/formInput";
 import {
   CheckCircle2,
-  XCircle,
   Loader2,
   ArrowLeft,
   ExternalLink,
   Mail,
 } from "lucide-react";
-import { isAxiosError } from "axios";
-import { axiosErrorHandler } from "@/utils";
-import axios from "@/services/api/axios.config";
 import { Separator } from "@/components/ui/separator";
+import { axiosErrorHandler } from "@/utils";
+import { isAxiosError } from "axios";
+import axios from "@/services/api/axios.config";
+import { toast } from "react-toastify";
 
-interface ForgotPasswordFormInputs {
+const COOLDOWN_TIME = 60;
+
+const EmailSentSuccess = ({
+  email,
+  countdown,
+  onResend,
+  expireDate = "1 hour",
+}: {
   email: string;
-}
-
-const validationSchema = {
-  email: {
-    required: "Email is required",
-    pattern: {
-      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-      message: "Invalid email address",
-    },
-  },
-};
-
-const EmailSentSuccess = ({ email }: { email: string }) => (
-  <div className="space-y-6 py-4">
-    <div className="flex flex-col items-center justify-center text-center space-y-4">
-      <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
-        <CheckCircle2 className="h-6 w-6 text-green-600" />
+  countdown: number;
+  expireDate?: string;
+  onResend: () => void;
+}) => {
+  const navigate = useNavigate();
+  return (
+    <div className="space-y-6 py-4">
+      <div className="flex flex-col items-center justify-center text-center space-y-4">
+        <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
+          <CheckCircle2 className="h-6 w-6 text-green-600" />
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold text-gray-900">
+            Check Your Email
+          </h3>
+          <p className="text-gray-500 max-w-sm">
+            We've sent a password reset link to <strong>{email}</strong>. The
+            link will expire in {expireDate}.
+          </p>
+        </div>
       </div>
-      <div className="space-y-2">
-        <h3 className="text-xl font-semibold text-gray-900">
-          Check Your Email
-        </h3>
-        <p className="text-gray-500 max-w-sm">
-          We've sent a password reset link to <strong>{email}</strong>. The link
-          will expire in 1 hour.
-        </p>
-      </div>
-    </div>
 
-    <div className="space-y-4">
-      <Button
-        onClick={() => (window.location.href = "/login")}
-        variant="outline"
-        className="w-full"
-      >
-        Return to Login
-      </Button>
+      <div className="space-y-4">
+        <Button
+          onClick={() => navigate("/login")}
+          variant="outline"
+          className="w-full"
+        >
+          Return to Login
+        </Button>
 
-      <div className="space-y-3">
-        <Separator className="my-2" />
-        <div className="flex flex-col space-y-2 text-center text-sm">
-          <p className="text-gray-500">Didn't receive the email?</p>
-          <div className="space-y-2">
-            <p className="text-gray-600">
-              Check your spam folder or{" "}
-              <Link
-                to="/support"
-                className="text-primary hover:underline inline-flex items-center"
-              >
-                contact support
-                <ExternalLink className="h-3 w-3 ml-1" />
-              </Link>
-            </p>
+        <div className="space-y-3">
+          <Separator className="my-2" />
+          <div className="flex flex-col space-y-2 text-center text-sm">
+            <p className="text-gray-500">Didn't receive the email?</p>
+            <div className="space-y-2">
+              {countdown > 0 ? (
+                <p className="text-gray-600">
+                  You can request another reset link in {countdown} seconds
+                </p>
+              ) : (
+                <Button
+                  onClick={onResend}
+                  variant="ghost"
+                  className="text-primary hover:underline inline-flex items-center"
+                >
+                  Click here to resend reset link
+                </Button>
+              )}
+              <p className="text-gray-600">
+                Make sure to check your spam folder or{" "}
+                <Link
+                  to="/support"
+                  className="text-primary hover:underline inline-flex items-center"
+                >
+                  contact support
+                  <ExternalLink className="h-3 w-3 ml-1" />
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const UnverifiedAccount = () => {
   const navigate = useNavigate();
-  return(
-  <div className="space-y-6 py-4">
-    <div className="flex flex-col items-center justify-center text-center space-y-4">
-      <div className="h-12 w-12 rounded-full bg-yellow-100 flex items-center justify-center">
-        <Mail className="h-6 w-6 text-yellow-600" />
+  return (
+    <div className="space-y-6 py-4">
+      <div className="flex flex-col items-center justify-center text-center space-y-4">
+        <div className="h-12 w-12 rounded-full bg-yellow-100 flex items-center justify-center">
+          <Mail className="h-6 w-6 text-yellow-600" />
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold text-gray-900">
+            Account Not Verified
+          </h3>
+          <p className="text-gray-500 max-w-sm">
+            Your account needs to be verified before you can reset your
+            password. Please verify your email address first.
+          </p>
+        </div>
       </div>
-      <div className="space-y-2">
-        <h3 className="text-xl font-semibold text-gray-900">
-          Account Not Verified
-        </h3>
-        <p className="text-gray-500 max-w-sm">
-          Your account needs to be verified before you can reset your password.
-          Please verify your email address first.
-        </p>
-      </div>
-    </div>
 
-    <div className="space-y-4">
-      <Button
-        onClick={() =>navigate("/resend-verification")}
-        className="w-full space-x-2"
-      >
-        <Mail className="h-4 w-4" />
-        <span>Resend Verification Email</span>
-      </Button>
+      <div className="space-y-4">
+        <Button
+          onClick={() => navigate("/resend-verification")}
+          className="w-full space-x-2"
+        >
+          <Mail className="h-4 w-4" />
+          <span>Resend Verification Email</span>
+        </Button>
 
-      <div className="space-y-3">
-        <Separator className="my-2" />
-        <div className="flex flex-col space-y-2 text-center text-sm">
-          <p className="text-gray-500">Need help?</p>
-          <Link
-            to="/support"
-            className="text-gray-600 hover:text-gray-500 inline-flex items-center justify-center space-x-1"
-          >
-            <span>Contact Support</span>
-            <ExternalLink className="h-3 w-3" />
-          </Link>
+        <div className="space-y-3">
+          <Separator className="my-2" />
+          <div className="flex flex-col space-y-2 text-center text-sm">
+            <p className="text-gray-500">Need help?</p>
+            <Link
+              to="/support"
+              className="text-gray-600 hover:text-gray-500 inline-flex items-center justify-center space-x-1"
+            >
+              <span>Contact Support</span>
+              <ExternalLink className="h-3 w-3" />
+            </Link>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-)};
+  );
+};
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<
-    "idle" | "pending" | "succeeded" | "failed" | "unverified"
+    "idle" | "succeeded" | "failed" | "unverified"
   >("idle");
-  const [error, setError] = useState("");
+  const [countdown, setCountdown] = useState(0);
+  const [lastEmail, setLastEmail] = useState("");
+  const [expireDate, setExpireDate] = useState("");
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
     watch,
-  } = useForm<ForgotPasswordFormInputs>({
+    setValue,
+  } = useForm<{ email: string }>({
     mode: "onChange",
     reValidateMode: "onChange",
   });
 
   const watchedEmail = watch("email");
 
-  const onSubmit = async (data: ForgotPasswordFormInputs) => {
-    setStatus("pending");
-    setError("");
+  useEffect(() => {
+    // Load saved state from localStorage
+    const savedState = localStorage.getItem("passwordResetState");
+    if (savedState) {
+      const { countdown, timestamp, email, status, expireDate } =
+        JSON.parse(savedState);
+      const elapsedTime = Math.floor((Date.now() - timestamp) / 1000);
+      const remainingTime = Math.max(0, countdown - elapsedTime);
+
+      if (remainingTime > 0) {
+        setCountdown(remainingTime);
+        startCountdown(remainingTime);
+        setValue("email", email);
+        setLastEmail(email);
+        setStatus(status);
+        setExpireDate(expireDate);
+      } else {
+        localStorage.removeItem("passwordResetState");
+      }
+    }
+  }, [setValue]);
+
+  const startCountdown = (duration: number) => {
+    setCountdown(duration);
+
+    const timer = setInterval(() => {
+      setCountdown((prevCount) => {
+        const newCount = prevCount - 1;
+        if (newCount <= 0) {
+          clearInterval(timer);
+          return 0;
+        }
+        return newCount;
+      });
+    }, 1000);
+
+    return timer;
+  };
+
+  const handleEmailSend = async (email: string) => {
+    setIsLoading(true);
 
     try {
-      await axios.post("/auth/forgot-password", {
-        email: data.email,
-      });
+      const { data } = await axios.post("/auth/forgot-password", { email });
+      setExpireDate(data.expireDate);
       setStatus("succeeded");
+      setLastEmail(email);
+
+      // Save state to localStorage only after successful API call
+      const state = {
+        countdown: COOLDOWN_TIME,
+        timestamp: Date.now(),
+        email: email,
+        status: "succeeded",
+        expireDate: data.expireDate,
+      };
+      localStorage.setItem("passwordResetState", JSON.stringify(state));
+
+      // Start countdown after saving state
+      startCountdown(COOLDOWN_TIME);
     } catch (error) {
       if (isAxiosError(error)) {
         const errorMessage = axiosErrorHandler(error);
@@ -166,34 +236,68 @@ const ForgotPassword = () => {
           setStatus("unverified");
         } else {
           setStatus("failed");
-          setError(errorMessage);
+            toast.error(axiosErrorHandler(error),
+              {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+              }
+            );
         }
       } else {
         setStatus("failed");
-        setError("Failed to send reset email. Please try again later.");
+          toast.error( "Could not send verification email. Please try again.",
+            {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            }
+          );
       }
+    } finally {
+          setIsLoading(false);
+        }
+  };
+
+  const onSubmit = async (data: { email: string }) => {
+    await handleEmailSend(data.email);
+  };
+
+  const handleResend = async () => {
+    if (countdown === 0 && lastEmail) {
+      await handleEmailSend(lastEmail);
     }
   };
 
   const renderContent = () => {
     if (status === "succeeded") {
-      return <EmailSentSuccess email={watchedEmail} />;
+      return (
+        <EmailSentSuccess
+          email={lastEmail || watchedEmail}
+          countdown={countdown}
+          expireDate={expireDate}
+          onResend={handleResend}
+        />
+      );
     }
 
     if (status === "unverified") {
-      return <UnverifiedAccount  />;
+      return <UnverifiedAccount />;
     }
 
     return (
       <div className="space-y-6">
-        {error && (
-          <Alert className="bg-red-50 border-red-200">
-            <XCircle className="h-5 w-5 text-red-500" />
-            <AlertDescription className="text-red-700">
-              {error}
-            </AlertDescription>
-          </Alert>
-        )}
+       
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <FormInput
             id="email"
@@ -201,22 +305,31 @@ const ForgotPassword = () => {
             label="Email Address"
             placeholder="Enter your email address"
             error={errors.email?.message}
-            {...register("email", validationSchema.email)}
-            disabled={status === "pending"}
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Invalid email address",
+              },
+            })}
+            disabled={isLoading}
           />
 
           <Button
             type="submit"
             className="w-full"
-            disabled={status === "pending" || !isValid}
+            disabled={isLoading || !isValid}
           >
-            {status === "pending" ? (
+            {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Sending Reset Link...
               </>
             ) : (
-              "Send Reset Link"
+              <>
+                <Mail className="mr-2 h-4 w-4" />
+                Send Reset Link
+              </>
             )}
           </Button>
         </form>
