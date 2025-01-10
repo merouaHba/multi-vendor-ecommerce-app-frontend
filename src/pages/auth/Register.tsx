@@ -30,6 +30,7 @@ import RegistrationConfirmation from "@/components/form/RegistrationConfirmation
      loading,
      //  error,
      accessToken,
+     user,
      formErrors,
      email,
      resetRegistration,
@@ -41,8 +42,14 @@ import RegistrationConfirmation from "@/components/form/RegistrationConfirmation
      AppleOAuth,
    } = useRegister("user");
 
-   if (accessToken) {
-     return <Navigate to="/" />;
+   if (accessToken && user ) {
+     if (user.role === "user") {
+      
+       return <Navigate to="/" />;
+      } else {
+       return <Navigate to="/seller/dashboard" />;
+       
+    }
    }
    if (loading === "succeeded") {
      return <RegistrationConfirmation email={email} resetRegistration = { resetRegistration } />;
