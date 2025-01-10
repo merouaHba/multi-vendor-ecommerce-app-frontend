@@ -1,246 +1,277 @@
-// import React, { useState } from "react";
+import React from "react";
 import {
-//   Search,
-//   ShoppingCart,
-//   User,
-//   Menu,
-//   X,
-//   Mail,
-//   Phone,
-//   MapPin,
   Facebook,
   Twitter,
   Instagram,
+  Store,
+  Mail,
+  Phone,
+  MapPin,
+  ChevronRight,
+  Send,
+  CheckCircle,
+  AlertCircle,
 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
-// const Header = () => {
-//   const [isMenuOpen, setIsMenuOpen] = useState(false);
-//   const categories = ["Electronics", "Fashion", "Home", "Beauty", "Sports"];
+// Footer link interface and links data remain the same...
+interface FooterLink {
+  label: string;
+  href: string;
+}
 
-//   return (
-//     <div className="w-full">
-//       {/* Top Bar */}
-//       <div className="bg-blue-600 text-white py-2">
-//         <div className="container mx-auto px-4 flex justify-between items-center text-sm">
-//           <div className="flex items-center gap-6">
-//             <div className="flex items-center gap-2">
-//               <Phone size={14} />
-//               <span>+1 234 567 890</span>
-//             </div>
-//             <div className="hidden md:flex items-center gap-2">
-//               <Mail size={14} />
-//               <span>support@multimart.com</span>
-//             </div>
-//           </div>
-//           <div className="flex items-center gap-4">
-//             <a href="#" className="hover:text-blue-200">
-//               Track Order
-//             </a>
-//             <a href="#" className="hover:text-blue-200">
-//               Contact
-//             </a>
-//           </div>
-//         </div>
-//       </div>
+const customerLinks: FooterLink[] = [
+  { label: "Help Center", href: "/help" },
+  { label: "Track Order", href: "/track-order" },
+  { label: "Returns & Refunds", href: "/returns" },
+  { label: "Shipping Info", href: "/shipping" },
+  { label: "Payment Methods", href: "/payment" },
+];
 
-//       {/* Main Header */}
-//       <div className="bg-white shadow-md">
-//         <div className="container mx-auto px-4">
-//           <div className="flex items-center justify-between h-20">
-//             {/* Logo */}
-//             <div className="text-2xl font-bold text-blue-600">MultiMart</div>
+const companyLinks: FooterLink[] = [
+  { label: "About Us", href: "/about" },
+  { label: "Careers", href: "/careers" },
+  { label: "Blog", href: "/blog" },
+  { label: "Press Center", href: "/press" },
+];
 
-//             {/* Search Bar */}
-//             <div className="hidden md:flex flex-1 max-w-xl mx-6">
-//               <div className="relative w-full">
-//                 <input
-//                   type="text"
-//                   placeholder="Search products..."
-//                   className="w-full pl-4 pr-10 py-2 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
-//                 />
-//                 <button className="absolute right-3 top-2.5 text-gray-400 hover:text-blue-600">
-//                   <Search size={20} />
-//                 </button>
-//               </div>
-//             </div>
-
-//             {/* Right Icons */}
-//             <div className="flex items-center gap-6">
-//               <button className="hidden md:flex items-center gap-2 hover:text-blue-600">
-//                 <User size={24} />
-//                 <span className="text-sm">Account</span>
-//               </button>
-
-//               <button className="relative hover:text-blue-600">
-//                 <ShoppingCart size={24} />
-//                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-//                   3
-//                 </span>
-//               </button>
-
-//               <button
-//                 className="md:hidden"
-//                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-//               >
-//                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-//               </button>
-//             </div>
-//           </div>
-
-//           {/* Categories */}
-//           <nav className="hidden md:block border-t">
-//             <ul className="flex gap-8 py-4">
-//               {categories.map((category) => (
-//                 <li key={category}>
-//                   <a href="#" className="hover:text-blue-600 font-medium">
-//                     {category}
-//                   </a>
-//                 </li>
-//               ))}
-//             </ul>
-//           </nav>
-//         </div>
-//       </div>
-
-//       {/* Mobile Menu */}
-//       {isMenuOpen && (
-//         <div className="md:hidden bg-white border-t shadow-lg">
-//           <div className="container mx-auto px-4 py-4">
-//             <div className="mb-4">
-//               <input
-//                 type="text"
-//                 placeholder="Search products..."
-//                 className="w-full pl-4 pr-10 py-2 border-2 border-gray-200 rounded-lg"
-//               />
-//             </div>
-//             <ul className="space-y-4">
-//               {categories.map((category) => (
-//                 <li key={category}>
-//                   <a href="#" className="block py-2 hover:text-blue-600">
-//                     {category}
-//                   </a>
-//                 </li>
-//               ))}
-//             </ul>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
+const policyLinks: FooterLink[] = [
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Terms of Service", href: "/terms" },
+  { label: "Cookie Policy", href: "/cookies" },
+  { label: "Seller Policy", href: "/seller-policy" },
+];
 
 export default function Footer() {
+  const [email, setEmail] = React.useState("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [subscriptionStatus, setSubscriptionStatus] = React.useState<
+    "success" | "error" | null
+  >(null);
+
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateEmail(email)) {
+      setSubscriptionStatus("error");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubscriptionStatus(null);
+
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setSubscriptionStatus("success");
+      setEmail("");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      setSubscriptionStatus("error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <footer className="bg-gray-900 text-gray-300">
-      {/* Main Footer */}
-      <div className="container mx-auto px-4 pt-16 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Company Info */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-white">MultiMart</h2>
+      {/* Enhanced Newsletter Section */}
+      <div className="bg-gradient-to-r from-indigo-600 to-indigo-800">
+        <div className="container mx-auto px-4 py-12">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="text-white max-w-md">
+              <h3 className="text-3xl font-bold mb-3">Join Our Newsletter</h3>
+              <p className="text-indigo-100 text-lg">
+                Get 10% off your first order and stay updated with exclusive
+                offers, new arrivals, and insider-only discounts!
+              </p>
+              <div className="flex items-center gap-4 mt-4">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-indigo-200" />
+                  <span className="text-sm text-indigo-100">
+                    Weekly Updates
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-indigo-200" />
+                  <span className="text-sm text-indigo-100">No Spam</span>
+                </div>
+              </div>
+            </div>
+            <div className="w-full md:w-auto max-w-md">
+              <form onSubmit={handleSubscribe} className="space-y-4">
+                <div className="relative">
+                  <Input
+                    type="email"
+                    placeholder="Enter your email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full md:w-96 bg-white/10 border-white/20 text-white placeholder:text-white/60 pr-12"
+                    disabled={isSubmitting}
+                    required
+                  />
+                  <Send className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/60" />
+                </div>
+                <Button
+                  type="submit"
+                  className="w-full bg-white text-indigo-600 hover:bg-indigo-50 transition-all duration-200"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Subscribing..." : "Subscribe Now"}
+                </Button>
+                {subscriptionStatus === "success" && (
+                  <Alert className="bg-green-500/10 text-green-200 border-green-500/20">
+                    <CheckCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      Thanks for subscribing! Check your email for confirmation.
+                    </AlertDescription>
+                  </Alert>
+                )}
+                {subscriptionStatus === "error" && (
+                  <Alert className="bg-red-500/10 text-red-200 border-red-500/20">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      Please enter a valid email address.
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Footer Content */}
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+          {/* Brand Section */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="flex items-center space-x-2">
+              <Store className="h-8 w-8 text-indigo-500" />
+              <span className="text-2xl font-bold text-white">MultiMart</span>
+            </div>
             <p className="text-gray-400 leading-relaxed">
-              Your one-stop destination for all your shopping needs. Quality
-              products, trusted sellers.
+              Your one-stop destination for all your shopping needs. We connect
+              millions of buyers and sellers around the world, empowering people
+              & creating economic opportunity.
             </p>
-            <div className="flex gap-4">
-              <a href="#" className="hover:text-white">
-                <Facebook size={20} />
-              </a>
-              <a href="#" className="hover:text-white">
-                <Twitter size={20} />
-              </a>
-              <a href="#" className="hover:text-white">
-                <Instagram size={20} />
-              </a>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Phone className="h-5 w-5 text-indigo-500" />
+                <span>1-800-MULTIMART</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Mail className="h-5 w-5 text-indigo-500" />
+                <span>support@multimart.com</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <MapPin className="h-5 w-5 text-indigo-500" />
+                <span>123 Commerce St, Market City, MC 12345</span>
+              </div>
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Quick Links Sections */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Quick Links
+            <h3 className="text-lg font-semibold text-white mb-6">
+              Customer Service
             </h3>
-            <ul className="space-y-3">
-              {[
-                "About Us",
-                "Contact Us",
-                "Privacy Policy",
-                "Terms of Service",
-              ].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    {link}
+            <ul className="space-y-4">
+              {customerLinks.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    className="text-gray-400 hover:text-white flex items-center group"
+                  >
+                    <ChevronRight className="h-4 w-4 mr-2 transition-transform group-hover:translate-x-1" />
+                    {link.label}
                   </a>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Customer Service */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Customer Service
-            </h3>
-            <ul className="space-y-3">
-              {["Help Center", "Returns", "Shipping Info", "Track Order"].map(
-                (link) => (
-                  <li key={link}>
-                    <a href="#" className="text-gray-400 hover:text-white">
-                      {link}
-                    </a>
-                  </li>
-                )
-              )}
+            <h3 className="text-lg font-semibold text-white mb-6">Company</h3>
+            <ul className="space-y-4">
+              {companyLinks.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    className="text-gray-400 hover:text-white flex items-center group"
+                  >
+                    <ChevronRight className="h-4 w-4 mr-2 transition-transform group-hover:translate-x-1" />
+                    {link.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Newsletter */}
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Newsletter
-            </h3>
-            <p className="text-gray-400 mb-4">
-              Subscribe to get special offers, free giveaways, and updates.
-            </p>
-            <div className="space-y-3">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full px-4 py-2 rounded-lg text-gray-800 mb-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-              <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg w-full transition-colors">
-                Subscribe
-              </button>
-            </div>
+            <h3 className="text-lg font-semibold text-white mb-6">Legal</h3>
+            <ul className="space-y-4">
+              {policyLinks.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    className="text-gray-400 hover:text-white flex items-center group"
+                  >
+                    <ChevronRight className="h-4 w-4 mr-2 transition-transform group-hover:translate-x-1" />
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-12 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-400">
-              © {new Date().getFullYear()} MultiMart. All rights reserved.
-            </p>
-            <div className="flex items-center gap-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex flex-col md:flex-row items-center gap-4">
+              <p className="text-gray-400">
+                © {new Date().getFullYear()} MultiMart. All rights reserved.
+              </p>
+              <div className="flex items-center gap-6">
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <Facebook className="h-5 w-5" />
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <Twitter className="h-5 w-5" />
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <Instagram className="h-5 w-5" />
+                </a>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <img src="/api/placeholder/40/25" alt="Visa" className="h-8" />
               <img
                 src="/api/placeholder/40/25"
-                alt="Payment Method"
-                className="h-6"
+                alt="Mastercard"
+                className="h-8"
               />
+              <img src="/api/placeholder/40/25" alt="PayPal" className="h-8" />
               <img
                 src="/api/placeholder/40/25"
-                alt="Payment Method"
-                className="h-6"
-              />
-              <img
-                src="/api/placeholder/40/25"
-                alt="Payment Method"
-                className="h-6"
-              />
-              <img
-                src="/api/placeholder/40/25"
-                alt="Payment Method"
-                className="h-6"
+                alt="Apple Pay"
+                className="h-8"
               />
             </div>
           </div>
@@ -248,21 +279,4 @@ export default function Footer() {
       </div>
     </footer>
   );
-};
-
-// export default function Layout() {
-//   return (
-//     <div className="min-h-screen flex flex-col">
-//       <Header />
-//       <main className="flex-grow bg-gray-50">
-//         {/* Your page content goes here */}
-//         <div className="container mx-auto px-4 py-8">
-//           <div className="h-96 bg-white rounded-lg shadow-sm flex items-center justify-center text-gray-400">
-//             Page Content
-//           </div>
-//         </div>
-//       </main>
-//       <Footer />
-//     </div>
-//   );
-// }
+}
