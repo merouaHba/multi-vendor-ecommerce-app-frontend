@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,16 +7,8 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-  // CardFooter,
 } from "@/components/ui/card";
-// import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Loader2,
-  Mail,
-  CheckCircle2,
-  // ArrowLeft,
-  ExternalLink,
-} from "lucide-react";
+import { Loader2, Mail, CheckCircle2, ExternalLink } from "lucide-react";
 import FormInput from "@/components/form/formInput";
 import { useForm } from "react-hook-form";
 import { isAxiosError } from "axios";
@@ -28,17 +20,19 @@ import { Separator } from "@/components/ui/separator";
 const COOLDOWN_TIME = 60;
 
 const EmailSentSuccess = ({
- email,
+  email,
   countdown,
   onResend,
-   expireDate="24 hour",
+  expireDate = "24 hour",
+  loginPath,
 }: {
   email: string;
-    countdown: number;
-   expireDate?: string;
+  countdown: number;
+  expireDate?: string;
   onResend: () => void;
-  }) => {
-   const navigate = useNavigate();
+  loginPath: string;
+}) => {
+  const navigate = useNavigate();
   return (
     <div className="space-y-6 py-4">
       <div className="flex flex-col items-center justify-center text-center space-y-4">
@@ -58,7 +52,7 @@ const EmailSentSuccess = ({
 
       <div className="space-y-4">
         <Button
-          onClick={() => navigate("/login")}
+          onClick={() => navigate(loginPath)}
           variant="outline"
           className="w-full"
         >
@@ -99,14 +93,19 @@ const EmailSentSuccess = ({
         </div>
       </div>
     </div>
-  );};
+  );
+};
 
 const ResendVerification = () => {
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [status, setStatus] = useState<"idle" | "succeeded">("idle");
   const [lastEmail, setLastEmail] = useState("");
-   const [expireDate, setExpireDate] = useState("");
+  const [expireDate, setExpireDate] = useState("");
+
+  const loginPath =
+    location.state?.from === "/seller/login" ? "/seller/login" : "/login";
 
   const {
     register,
@@ -120,8 +119,6 @@ const ResendVerification = () => {
     },
   });
 
-
-  
   useEffect(() => {
     // Load saved state from localStorage
     const savedState = localStorage.getItem("verificationState");
@@ -217,7 +214,6 @@ const ResendVerification = () => {
     }
   };
 
-
   const onSubmit = async (formData: { email: string }) => {
     await handleEmailSend(formData.email);
   };
@@ -236,6 +232,7 @@ const ResendVerification = () => {
           countdown={countdown}
           onResend={handleResend}
           expireDate={expireDate}
+          loginPath={loginPath}
         />
       );
     }
@@ -286,7 +283,7 @@ const ResendVerification = () => {
           <p className="text-center text-sm text-gray-600">
             Already verified?{" "}
             <Link
-              to="/login"
+              to={loginPath}
               className="text-primary hover:underline font-medium"
             >
               Sign in

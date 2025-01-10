@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import useLogin from "@/hooks/useLogin";
 import FormInput from "@/components/form/formInput";
 import GoogleIcon from "@/components/common/GoogleIcon";
@@ -17,10 +17,12 @@ import FacebookIcon from "@/components/common/FacebookIcon";
 import AppleIcon from "@/components/common/AppleIcon";
 import OAuthButton from "@/components/common/SocialButton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
- const BuyerLogin = () => {
+const BuyerLogin = () => {
+   const navigate = useNavigate()
 const {
   loading,
   accessToken,
+  user,
   formErrors,
   unverifiedEmail,
   register,
@@ -31,9 +33,13 @@ const {
   submitForm,
 } = useLogin("user");
   
-if (accessToken) {
-  return <Navigate to="/" />;
-}
+   if (accessToken && user) {
+     if (user.role === "user") {
+       return <Navigate to="/" />;
+     } else {
+       return <Navigate to="/seller/dashboard" />;
+     }
+   }
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
       <Card className="max-w-md w-full mx-auto">
@@ -57,7 +63,7 @@ if (accessToken) {
 
             <OAuthButton
               icon={<FacebookIcon />}
-              onClick={ FacebookOAuth}
+              onClick={FacebookOAuth}
               className="hover:bg-blue-50 hover:border-blue-400"
             >
               Continue with Facebook
@@ -129,12 +135,12 @@ if (accessToken) {
                   Remember me
                 </Label>
               </div>
-              <Link
-                to="/forgot-password"
+              <p
+                onClick={() =>navigate('/forgot-password', { state: { from: '/login' } })}
                 className="text-sm text-indigo-600 hover:text-indigo-500"
               >
                 Forgot password?
-              </Link>
+              </p>
             </div>
             <Button
               type="submit"

@@ -13,7 +13,7 @@ const useLogin = (role: "user" | "seller") => {
   const navigate = useNavigate();
   const [unverifiedEmail, setunverifiedEmail] = useState("");
 
-  const { error, loading, accessToken } = useAppSelector((state) => state.auth);
+  const { error, loading, accessToken , user} = useAppSelector((state) => state.auth);
 
   const {
     register,
@@ -104,6 +104,7 @@ const useLogin = (role: "user" | "seller") => {
     error,
     loading,
     accessToken,
+    user,
     formErrors,
     unverifiedEmail,
     register,

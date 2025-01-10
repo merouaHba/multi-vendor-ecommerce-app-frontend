@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams, Link } from "react-router-dom";
+import {
+  useNavigate,
+  useSearchParams,
+  Link,
+  useLocation,
+} from "react-router-dom";
 import { useForm } from "react-hook-form";
 import {
   Card,
@@ -62,7 +67,11 @@ const validationSchema = {
   },
 };
 
-const ResetPasswordSuccess = ({ countdown }: { countdown: number }) => (
+const ResetPasswordSuccess = ({
+  countdown,
+}: {
+  countdown: number;
+}) => (
   <div className="space-y-6 py-4">
     <div className="flex flex-col items-center justify-center text-center space-y-4">
       <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
@@ -81,72 +90,76 @@ const ResetPasswordSuccess = ({ countdown }: { countdown: number }) => (
   </div>
 );
 
-const TokenNotFound = () => {
-   const navigate = useNavigate();
-  return(
-  <div className="space-y-6 py-6">
-    <div className="flex flex-col items-center justify-center text-center space-y-4">
-      <div className="h-12 w-12 rounded-full bg-yellow-100 flex items-center justify-center">
-        <AlertTriangle className="h-6 w-6 text-yellow-600" />
+const TokenNotFound = ({ loginPath }: { loginPath: string }) => {
+  const navigate = useNavigate();
+  return (
+    <div className="space-y-6 py-6">
+      <div className="flex flex-col items-center justify-center text-center space-y-4">
+        <div className="h-12 w-12 rounded-full bg-yellow-100 flex items-center justify-center">
+          <AlertTriangle className="h-6 w-6 text-yellow-600" />
+        </div>
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold text-gray-900">
+            Invalid Reset Link
+          </h3>
+          <p className="text-gray-500 max-w-sm">
+            The password reset link is invalid or has expired. Please request a
+            new link to reset your password.
+          </p>
+        </div>
       </div>
-      <div className="space-y-2">
-        <h3 className="text-xl font-semibold text-gray-900">
-          Invalid Reset Link
-        </h3>
-        <p className="text-gray-500 max-w-sm">
-          The password reset link is invalid or has expired. Please request a
-          new link to reset your password.
-        </p>
-      </div>
-    </div>
 
-    <div className="space-y-4">
-      <Button
-        onClick={() =>navigate( "/forgot-password")}
-        className="w-full space-x-2"
-      >
-        <Mail className="h-4 w-4" />
-        <span>Request New Reset Link</span>
-      </Button>
+      <div className="space-y-4">
+        <Button
+          onClick={() =>
+            navigate("/forgot-password", { state: { from: loginPath } })
+          }
+          className="w-full space-x-2"
+        >
+          <Mail className="h-4 w-4" />
+          <span>Request New Reset Link</span>
+        </Button>
 
-      <div className="space-y-3">
-        <Separator className="my-2" />
-        <div className="flex flex-col space-y-2 text-center text-sm">
-          <p className="text-gray-500">Need help?</p>
-          <Link
-            to="/support"
-            className="text-gray-600 hover:text-gray-500 inline-flex items-center justify-center space-x-1"
-          >
-            <span>Contact Support</span>
-            <ExternalLink className="h-3 w-3" />
-          </Link>
+        <div className="space-y-3">
+          <Separator className="my-2" />
+          <div className="flex flex-col space-y-2 text-center text-sm">
+            <p className="text-gray-500">Need help?</p>
+            <Link
+              to="/support"
+              className="text-gray-600 hover:text-gray-500 inline-flex items-center justify-center space-x-1"
+            >
+              <span>Contact Support</span>
+              <ExternalLink className="h-3 w-3" />
+            </Link>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-)};
-
-
+  );
+};
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [status, setStatus] = useState<
     "idle" | "pending" | "succeeded" | "failed"
   >("idle");
   const [error, setError] = useState("");
   const [countdown, setCountdown] = useState(3);
   const token = searchParams.get("token");
+
+  const loginPath =
+    location.state?.from === "/seller/login" ? "/seller/login" : "/login";
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-
   } = useForm<ResetPasswordFormInputs>({
     mode: "onChange",
     reValidateMode: "onChange",
   });
-
 
   useEffect(() => {
     if (!token) {
@@ -161,7 +174,7 @@ const ResetPassword = () => {
         setCountdown((prev) => {
           if (prev <= 1) {
             clearInterval(timer);
-            navigate("/login");
+            navigate(loginPath);
             return 0;
           }
           return prev - 1;
@@ -169,7 +182,7 @@ const ResetPassword = () => {
       }, 1000);
     }
     return () => clearInterval(timer);
-  }, [status, navigate]);
+  }, [status, navigate, loginPath]);
 
   const onSubmit = async (data: ResetPasswordFormInputs) => {
     if (!token) {
@@ -203,11 +216,13 @@ const ResetPassword = () => {
 
   const renderContent = () => {
     if (status === "succeeded") {
-      return <ResetPasswordSuccess countdown={countdown} />;
+      return (
+        <ResetPasswordSuccess countdown={countdown}  />
+      );
     }
 
     if (status === "failed" && !token) {
-      return <TokenNotFound />;
+      return <TokenNotFound loginPath={loginPath} />;
     }
 
     return (
@@ -281,7 +296,7 @@ const ResetPassword = () => {
         {status !== "succeeded" && status !== "failed" && (
           <CardFooter className="flex justify-center pb-6">
             <Button
-              onClick={() => navigate("/login")}
+              onClick={() => navigate(loginPath)}
               variant="ghost"
               className="text-sm text-gray-500 hover:text-gray-700"
             >

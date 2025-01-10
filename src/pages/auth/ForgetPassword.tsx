@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import {
   Card,
@@ -31,11 +31,13 @@ const EmailSentSuccess = ({
   countdown,
   onResend,
   expireDate = "1 hour",
+  loginPath,
 }: {
   email: string;
   countdown: number;
   expireDate?: string;
   onResend: () => void;
+  loginPath: string;
 }) => {
   const navigate = useNavigate();
   return (
@@ -57,7 +59,7 @@ const EmailSentSuccess = ({
 
       <div className="space-y-4">
         <Button
-          onClick={() => navigate("/login")}
+          onClick={() => navigate(loginPath)}
           variant="outline"
           className="w-full"
         >
@@ -100,7 +102,7 @@ const EmailSentSuccess = ({
   );
 };
 
-const UnverifiedAccount = () => {
+const UnverifiedAccount = ({ loginPath }: { loginPath: string }) => {
   const navigate = useNavigate();
   return (
     <div className="space-y-6 py-4">
@@ -121,7 +123,7 @@ const UnverifiedAccount = () => {
 
       <div className="space-y-4">
         <Button
-          onClick={() => navigate("/resend-verification")}
+          onClick={() => navigate(`${loginPath==="/seller/login" ? "..":""}/resend-verification`, { state: { from: loginPath } })}
           className="w-full space-x-2"
         >
           <Mail className="h-4 w-4" />
@@ -148,6 +150,7 @@ const UnverifiedAccount = () => {
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<
     "idle" | "succeeded" | "failed" | "unverified"
@@ -155,6 +158,10 @@ const ForgotPassword = () => {
   const [countdown, setCountdown] = useState(0);
   const [lastEmail, setLastEmail] = useState("");
   const [expireDate, setExpireDate] = useState("");
+
+  // Determine login path based on the referrer
+  const loginPath =
+    location.state?.from === "/seller/login" ? "/seller/login" : "/login";
 
   const {
     register,
@@ -236,37 +243,33 @@ const ForgotPassword = () => {
           setStatus("unverified");
         } else {
           setStatus("failed");
-            toast.error(axiosErrorHandler(error),
-              {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-              }
-            );
+          toast.error(axiosErrorHandler(error), {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
         }
       } else {
         setStatus("failed");
-          toast.error( "Could not send verification email. Please try again.",
-            {
-              position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
-            }
-          );
+        toast.error("Could not send verification email. Please try again.", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       }
     } finally {
-          setIsLoading(false);
-        }
+      setIsLoading(false);
+    }
   };
 
   const onSubmit = async (data: { email: string }) => {
@@ -287,17 +290,17 @@ const ForgotPassword = () => {
           countdown={countdown}
           expireDate={expireDate}
           onResend={handleResend}
+          loginPath={loginPath}
         />
       );
     }
 
     if (status === "unverified") {
-      return <UnverifiedAccount />;
+      return <UnverifiedAccount loginPath={loginPath} />;
     }
 
     return (
       <div className="space-y-6">
-       
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <FormInput
             id="email"
@@ -358,7 +361,7 @@ const ForgotPassword = () => {
         {status !== "succeeded" && status !== "unverified" && (
           <CardFooter className="flex justify-center pb-6">
             <Button
-              onClick={() => navigate("/login")}
+              onClick={() => navigate(loginPath)}
               variant="ghost"
               className="text-sm text-gray-500 hover:text-gray-700"
             >
