@@ -15,7 +15,7 @@ type TResponse = {
 };
 
 const actAuthLogin = createAsyncThunk(
-  "auth/actAuthLogin",
+  "auth/actOAuthLogin",
   async (formData: TFormData, thunk) => {
     const { rejectWithValue } = thunk;
 
