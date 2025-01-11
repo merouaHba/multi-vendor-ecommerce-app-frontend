@@ -11,7 +11,6 @@ import Error from "@/pages/Error";
 // Layouts
 const MainLayout = lazy(() => import("@/layouts/MainLayout"));
 const DashboardLayout = lazy(() => import("@/layouts/ProfileLayout"));
-// const AuthLayout = lazy(() => import("@/layouts/AuthLayout"));
 // const SellerLayout = lazy(() => import("@/layouts/SellerLayout"));
 
 // Customer-facing Pages
@@ -75,7 +74,7 @@ const OrderManagement = lazy(
 const OrderDetails = lazy(() => import("@/pages/seller/orders/orderDetails"));
 
 // Route Guard Component
-// const ProtectedRoute = lazy(() => import("@/components/Auth/ProtectedRoute"));
+const ProtectedRoute = lazy(() => import("@/components/auth/ProtectedRoute"));
 
 // Loader Component
 const SuspenseLoader = ({ children }: { children: React.ReactNode }) => (
@@ -262,7 +261,6 @@ const router = createBrowserRouter([
   {
     element: (
       <SuspenseLoader>
-        {/* <AuthLayout /> */}
         <Outlet />
       </SuspenseLoader>
     ),
@@ -323,11 +321,11 @@ const router = createBrowserRouter([
   {
     path: "dashboard",
     element: (
-      // <ProtectedRoute>
       <SuspenseLoader>
-        <DashboardLayout />
-      </SuspenseLoader>
-      // </ProtectedRoute>
+          <ProtectedRoute role="user">
+          <DashboardLayout />
+      </ProtectedRoute>
+        </SuspenseLoader>
     ),
     errorElement: <Error />,
     children: [
@@ -384,9 +382,10 @@ const router = createBrowserRouter([
     path: "seller",
     element: (
       <SuspenseLoader>
-        {/* <SellerLayout /> */}
-        <Outlet />
-      </SuspenseLoader>
+          <ProtectedRoute role="seller">
+          <Outlet />
+      </ProtectedRoute>
+        </SuspenseLoader>
     ),
     errorElement: <Error />,
     children: [
@@ -410,9 +409,9 @@ const router = createBrowserRouter([
         path: "dashboard",
         element: (
           // <ProtectedRoute>
-            <PageSuspenseFallback>
-              <SellerDashboard />
-            </PageSuspenseFallback>
+          <PageSuspenseFallback>
+            <SellerDashboard />
+          </PageSuspenseFallback>
           // </ProtectedRoute>
         ),
       },

@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Navigate, Outlet, useLocation, Link } from "react-router-dom";
+import { Outlet, useLocation, Link } from "react-router-dom";
 import { useAppSelector } from "@/store/hooks";
 import {
   User,
@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import useHeader from "@/hooks/useHeader";
 
 const navigation = [
   {
@@ -53,12 +54,9 @@ const navigation = [
 export default function DashboardLayout() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  const { user, accessToken } = useAppSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
+  const {logout} = useHeader();
 
-  // Protect route - redirect to login if not authenticated
-  if (!accessToken) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
 
   const NavigationLink = ({ item }: { item: typeof navigation[0] }) => {
     const Icon = item.icon;
@@ -106,6 +104,7 @@ export default function DashboardLayout() {
       </div>
       <div className="flex-1" />
       <Button
+        onClick={logout}
         variant="ghost"
         className="flex w-full items-center gap-3 px-3 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
       >

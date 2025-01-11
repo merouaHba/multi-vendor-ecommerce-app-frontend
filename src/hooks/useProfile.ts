@@ -49,27 +49,6 @@ const useProfile = () => {
     resolver: zodResolver(passwordSchema),
   });
 
-  // Handle profile image upload
-  // const handleImageChange = async (file: File) => {
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("avatar", file);
-
-  //     // await dispatch(actUpdateUser(formData)).unwrap();
-  //     toast.success("Profile picture updated successfully", {
-  //       position: "top-right",
-  //       autoClose: 5000,
-  //       theme: "colored",
-  //     });
-  //   } catch (error) {
-  //     toast.error(error as string, {
-  //       position: "top-right",
-  //       autoClose: 5000,
-  //       theme: "colored",
-  //     });
-  //   }
-  // };
-
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
