@@ -222,17 +222,17 @@ const Header = () => {
         <p className="text-xs text-gray-500">{user?.email}</p>
       </div>
       <DropdownMenuItem>
-        <Link to="/profile" className="w-full">
+        <Link to="/dashboard/profile" className="w-full">
           Profile
         </Link>
       </DropdownMenuItem>
       <DropdownMenuItem>
-        <Link to="/orders" className="w-full">
+        <Link to="/dashboard/orders" className="w-full">
           Orders
         </Link>
       </DropdownMenuItem>
       <DropdownMenuItem>
-        <Link to="/wishlist" className="w-full">
+        <Link to="/dashboard/wishlist" className="w-full">
           Wishlist
         </Link>
       </DropdownMenuItem>
@@ -246,10 +246,6 @@ const Header = () => {
 
   const UnauthenticatedDropdown = () => (
     <DropdownMenuContent align="end" className="w-48">
-      {/* <div className="px-4 py-3 border-b">
-        <p className="text-sm font-medium">Welcome!</p>
-        <p className="text-xs text-gray-500">Access account & manage orders</p>
-      </div> */}
       <DropdownMenuItem>
         <Link to="/login" className="w-full">
           Login
