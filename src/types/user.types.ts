@@ -9,7 +9,7 @@ export type TUser = {
   profilePicture?: string;
   address?: string;
 };
-export type TSeller = {
+export type TSeller= {
   storeName: string;
   storeDetails: {
     state: string;

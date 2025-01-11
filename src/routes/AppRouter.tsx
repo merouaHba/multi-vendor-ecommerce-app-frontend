@@ -1,487 +1,466 @@
 import { lazy, Suspense } from "react";
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
-// layouts
-const MainLayout = lazy(() => import("@/layouts/MainLayout"));
-// const ProfileLayout = lazy(
-//   () => import("@/layouts/ProfileLayout")
-// );
-// components
+import {
+  createBrowserRouter,
+  Outlet,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import { LottieHandler, PageSuspenseFallback } from "@/components/feedback";
-// pages
+import Error from "@/pages/Error";
+
+// Layouts
+const MainLayout = lazy(() => import("@/layouts/MainLayout"));
+const DashboardLayout = lazy(() => import("@/layouts/ProfileLayout"));
+// const AuthLayout = lazy(() => import("@/layouts/AuthLayout"));
+// const SellerLayout = lazy(() => import("@/layouts/SellerLayout"));
+
+// Customer-facing Pages
 const Home = lazy(() => import("@/pages/customer-facing/Home"));
-const Wishlist = lazy(() => import("@/pages/customer-facing/Wishlist"));
+const Wishlist = lazy(() => import("@/pages/dashboard/Wishlist"));
 const Categories = lazy(() => import("@/pages/customer-facing/Categories"));
 const Cart = lazy(() => import("@/pages/customer-facing/Cart"));
 const Products = lazy(() => import("@/pages/customer-facing/Products"));
 const Product = lazy(() => import("@/pages/customer-facing/Product"));
-const Policy = lazy(() => import("@/pages/policy/Policy"));
-const PrivacyPolicy = lazy(() => import("@/pages/policy/PrivacyAndPolicy"));
-const TermsAndConditions = lazy(() => import("@/pages/policy/TermsAndConditions"));
-const ReturnRefundPolicy = lazy(() => import("@/pages/policy/ReturnAndRefundPolicy"));
-const ShippingPolicy = lazy(() => import("@/pages/policy/ShippingPolicy"));
-const FAQ = lazy(() => import("@/pages/policy/Faq"));
 const AboutUs = lazy(() => import("@/pages/customer-facing/AboutUs"));
 const ContactUs = lazy(() => import("@/pages/customer-facing/ContactUs"));
+const CheckOut = lazy(() => import("@/pages/customer-facing/CheckOut"));
+const SearchResults = lazy(
+  () => import("@/pages/customer-facing/SearchResults")
+);
+const Category = lazy(() => import("@/pages/customer-facing/Category"));
+const OrderTracking = lazy(
+  () => import("@/pages/customer-facing/OrderTracking")
+);
+
+// Policy Pages
+const Policy = lazy(() => import("@/pages/policy/Policy"));
+const PrivacyPolicy = lazy(() => import("@/pages/policy/PrivacyAndPolicy"));
+const TermsAndConditions = lazy(
+  () => import("@/pages/policy/TermsAndConditions")
+);
+const ReturnRefundPolicy = lazy(
+  () => import("@/pages/policy/ReturnAndRefundPolicy")
+);
+const ShippingPolicy = lazy(() => import("@/pages/policy/ShippingPolicy"));
+const FAQ = lazy(() => import("@/pages/policy/Faq"));
+const CustomerServicePage = lazy(() => import("@/pages/policy/help"));
+
+// Auth Pages
 const Login = lazy(() => import("@/pages/auth/Login"));
 const Register = lazy(() => import("@/pages/auth/Register"));
 const ForgetPassword = lazy(() => import("@/pages/auth/ForgetPassword"));
 const ResetPassword = lazy(() => import("@/pages/auth/ResetPassword"));
 const EmailVerification = lazy(() => import("@/pages/auth/EmailVerification"));
-const ResendVerification = lazy(() => import("@/pages/auth/ResendVerificationEmail"));
-const CheckOut = lazy(() => import("@/pages/customer-facing/CheckOut"));
-const SearchResults = lazy(() =>  import("@/pages/customer-facing/SearchResults"));
-const Category = lazy(() =>  import( "@/pages/customer-facing/Category"));
-const OrderTracking = lazy(() =>  import( "@/pages/customer-facing/OrderTracking"));
-// const Account = lazy(() => import("@/pages/Account"));
-const UserDashboard = lazy(() => import("@/pages/customer-facing/Dashboard"));
+const ResendVerification = lazy(
+  () => import("@/pages/auth/ResendVerificationEmail")
+);
+
+// User Dashboard Pages
+const ProfilePage = lazy(() => import("@/pages/dashboard/Profile"));
+// const OrdersPage = lazy(() => import("@/pages/dashboard/OrdersPage"));
+// const NotificationsPage = lazy(
+//   () => import("@/pages/dashboard/NotificationsPage")
+// );
+// const UserWishlistPage = lazy(() => import("@/pages/dashboard/WishlistPage"));
+// const UserSettingsPage = lazy(() => import("@/pages/dashboard/SettingsPage"));
+
+// Seller Pages
+const SellerDashboard = lazy(() => import("@/pages/seller/Dashboard"));
+const SellerLogin = lazy(() => import("@/pages/seller/auth/Login"));
 const SellerRegistration = lazy(() => import("@/pages/seller/auth/Register"));
-const SellerDashboard = lazy(() => import( "@/pages/seller/Dashboard"));
-// const Orders = lazy(() => import("@/pages/Orders"));
-import Error from "@/pages/Error";
-import ProductForm from "@/pages/seller/product/Update";
-import OrderManagement from "@/pages/seller/orders/OrderManagement";
-import OrderDetails from "@/pages/seller/orders/orderDetails";
-import SellerLogin from "@/pages/seller/auth/Login";
-import CustomerServicePage from "@/pages/policy/help";
+// const ProductForm = lazy(() => import("@/pages/seller/product/Update"));
+const OrderManagement = lazy(
+  () => import("@/pages/seller/orders/OrderManagement")
+);
+const OrderDetails = lazy(() => import("@/pages/seller/orders/orderDetails"));
 
-// protect route
-// import ProtectedRoute from "@/components/Auth/ProtectedRoute";
+// Route Guard Component
+// const ProtectedRoute = lazy(() => import("@/components/Auth/ProtectedRoute"));
 
-const router = createBrowserRouter(
-  [
-    {
-      path: "/",
-      element: (
-        <Suspense
-          fallback={
-            <div style={{ marginTop: "10%" }}>
-              <LottieHandler type="loading" message="Loading please wait..." />
-            </div>
-          }
-        >
-          <MainLayout />
-        </Suspense>
-      ),
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
-            <PageSuspenseFallback>
-              <Home />
-            </PageSuspenseFallback>
-          ),
-        },
-        {
-          path: "/cart",
-          element: (
-            <PageSuspenseFallback>
-              <Cart />
-            </PageSuspenseFallback>
-          ),
-        },
-        {
-          path: "/wishlist",
-          element: (
-            // <ProtectedRoute>
-            <PageSuspenseFallback>
-              <Wishlist />
-            </PageSuspenseFallback>
-            // </ProtectedRoute>
-          ),
-        },
-        {
-          path: "/checkout",
-          element: (
-            <PageSuspenseFallback>
-              <CheckOut />
-            </PageSuspenseFallback>
-          ),
-        },
-        {
-          path: "/search",
-          element: (
-            <PageSuspenseFallback>
-              <SearchResults />
-            </PageSuspenseFallback>
-          ),
-        },
-        {
-          path: "/categories",
-          element: (
-            <PageSuspenseFallback>
-              <Categories />
-            </PageSuspenseFallback>
-          ),
-        },
-        {
-          path: "/categories/:prefix",
-          element: (
-            <PageSuspenseFallback>
-              <Category />
-            </PageSuspenseFallback>
-          ),
-        },
-        {
-          path: "/products/:prefix",
-          element: (
-            <PageSuspenseFallback>
-              <Product />
-            </PageSuspenseFallback>
-          ),
-        },
-        {
-          path: "/products",
-          element: (
-            <PageSuspenseFallback>
-              <Products />
-            </PageSuspenseFallback>
-          ),
-        },
-        {
-          path: "/policy",
-          element: (
-            <PageSuspenseFallback>
-              <Policy />
-            </PageSuspenseFallback>
-          ),
-        },
-        {
-          path: "/privacy-policy",
-          element: (
-            <PageSuspenseFallback>
-              <PrivacyPolicy />
-            </PageSuspenseFallback>
-          ),
-        },
-        {
-          path: "/terms-conditions",
-          element: (
-            <PageSuspenseFallback>
-              <TermsAndConditions />
-            </PageSuspenseFallback>
-          ),
-        },
-        {
-          path: "/return-refund-policy",
-          element: (
-            <PageSuspenseFallback>
-              <ReturnRefundPolicy />
-            </PageSuspenseFallback>
-          ),
-        },
-        {
-          path: "/shipping-policy",
-          element: (
-            <PageSuspenseFallback>
-              <ShippingPolicy />
-            </PageSuspenseFallback>
-          ),
-        },
-        {
-          path: "/faq",
-          element: (
-            <PageSuspenseFallback>
-              <FAQ />
-            </PageSuspenseFallback>
-          ),
-        },
-        {
-          path: "/help",
-          element: (
-            <PageSuspenseFallback>
-              <CustomerServicePage />
-            </PageSuspenseFallback>
-          ),
-        },
-        // {
-        //   path: "/categories/products/:prefix",
-        //   element: (
-        //     <PageSuspenseFallback>
-        //       <Products />
-        //     </PageSuspenseFallback>
-        //   ),
-        //   loader: ({ params }) => {
-        //     typeof params.prefix
-        //     if (
-        //       typeof params.prefix !== "string" ||
-        //       !/^[a-z]+$/i.test(params.prefix)
-        //     ) {
-        //       throw new Response("Bad Request", {
-        //         statusText: "Category not found",
-        //         status: 400,
-        //       });
-        //     }
-        //     return true;
-        //   },
-        // },
-        {
-          path: "about-us",
-          element: (
-            <PageSuspenseFallback>
-              <AboutUs />
-            </PageSuspenseFallback>
-          ),
-        },
-        {
-          path: "contact-us",
-          element: (
-            <PageSuspenseFallback>
-              <ContactUs />
-            </PageSuspenseFallback>
-          ),
-        },
+// Loader Component
+const SuspenseLoader = ({ children }: { children: React.ReactNode }) => (
+  <Suspense
+    fallback={
+      <div style={{ marginTop: "10%" }}>
+        <LottieHandler type="loading" message="Loading please wait..." />
+      </div>
+    }
+  >
+    {children}
+  </Suspense>
+);
 
-        {
-          path: "order-tracking",
-          element: (
-            <PageSuspenseFallback>
-              <OrderTracking />
-            </PageSuspenseFallback>
-          ),
-        },
-        // {
-        //   path: "profile",
-        //   element: (
-        //     <ProtectedRoute>
-        //       <PageSuspenseFallback>
-        //         <ProfileLayout />
-        //       </PageSuspenseFallback>
-        //     </ProtectedRoute>
-        //   ),
-        //   children: [
-        //     {
-        //       index: true,
-        //       element: (
-        //         <PageSuspenseFallback>
-        //           <Account />
-        //         </PageSuspenseFallback>
-        //       ),
-        //     },
-        //     {
-        //       path: "orders",
-        //       element: (
-        //         <PageSuspenseFallback>
-        //           <Orders />
-        //         </PageSuspenseFallback>
-        //       ),
-        //     },
-        //   ],
-        // },
-      ],
-    },
-    {
-      element: <Outlet />,
-      path: "/login",
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
-            <PageSuspenseFallback>
-              <Login />
-            </PageSuspenseFallback>
-          ),
-        },
-      ],
-    },
-    {
-      element: <Outlet />,
-      path: "/register",
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
-            <PageSuspenseFallback>
-              <Register />
-            </PageSuspenseFallback>
-          ),
-        },
-      ],
-    },
-    {
-      element: <Outlet />,
-      path: "/forgot-password",
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
-            <PageSuspenseFallback>
-              <ForgetPassword />
-            </PageSuspenseFallback>
-          ),
-        },
-      ],
-    },
-    {
-      element: <Outlet />,
-      path: "/reset-password",
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
-            <PageSuspenseFallback>
-              <ResetPassword />
-            </PageSuspenseFallback>
-          ),
-        },
-      ],
-    },
-    {
-      element: <Outlet />,
-      path: "/email-verification",
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
-            <PageSuspenseFallback>
-              <EmailVerification />
-            </PageSuspenseFallback>
-          ),
-        },
-      ],
-    },
-    {
-      element: <Outlet />,
-      path: "/resend-verification",
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
-            <PageSuspenseFallback>
-              <ResendVerification />
-            </PageSuspenseFallback>
-          ),
-        },
-      ],
-    },
-    {
-      element: <Outlet />,
-      path: "/seller/register",
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
-            <PageSuspenseFallback>
-              <SellerRegistration />
-            </PageSuspenseFallback>
-          ),
-        },
-      ],
-    },
-    {
-      element: <Outlet />,
-      path: "/seller/login",
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
-            <PageSuspenseFallback>
-              <SellerLogin />
-            </PageSuspenseFallback>
-          ),
-        },
-      ],
-    },
-    {
-      element: <Outlet />,
-      path: "/seller/dashboard",
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
+const router = createBrowserRouter([
+  // Main Layout Routes
+  {
+    path: "/",
+    element: (
+      <SuspenseLoader>
+        <MainLayout />
+      </SuspenseLoader>
+    ),
+    errorElement: <Error />,
+    children: [
+      {
+        index: true,
+        element: (
+          <PageSuspenseFallback>
+            <Home />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "cart",
+        element: (
+          <PageSuspenseFallback>
+            <Cart />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "wishlist",
+        element: (
+          <PageSuspenseFallback>
+            <Wishlist />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "checkout",
+        element: (
+          <PageSuspenseFallback>
+            <CheckOut />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "search",
+        element: (
+          <PageSuspenseFallback>
+            <SearchResults />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "categories",
+        element: (
+          <PageSuspenseFallback>
+            <Categories />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "categories/:prefix",
+        element: (
+          <PageSuspenseFallback>
+            <Category />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "products",
+        element: (
+          <PageSuspenseFallback>
+            <Products />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "products/:prefix",
+        element: (
+          <PageSuspenseFallback>
+            <Product />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "about-us",
+        element: (
+          <PageSuspenseFallback>
+            <AboutUs />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "contact-us",
+        element: (
+          <PageSuspenseFallback>
+            <ContactUs />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "order-tracking",
+        element: (
+          <PageSuspenseFallback>
+            <OrderTracking />
+          </PageSuspenseFallback>
+        ),
+      },
+
+      // Policy Routes
+      {
+        path: "policy",
+        element: (
+          <PageSuspenseFallback>
+            <Policy />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "privacy-policy",
+        element: (
+          <PageSuspenseFallback>
+            <PrivacyPolicy />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "terms-conditions",
+        element: (
+          <PageSuspenseFallback>
+            <TermsAndConditions />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "return-refund-policy",
+        element: (
+          <PageSuspenseFallback>
+            <ReturnRefundPolicy />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "shipping-policy",
+        element: (
+          <PageSuspenseFallback>
+            <ShippingPolicy />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "faq",
+        element: (
+          <PageSuspenseFallback>
+            <FAQ />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "help",
+        element: (
+          <PageSuspenseFallback>
+            <CustomerServicePage />
+          </PageSuspenseFallback>
+        ),
+      },
+    ],
+  },
+
+  // Auth Routes
+  {
+    element: (
+      <SuspenseLoader>
+        {/* <AuthLayout /> */}
+        <Outlet />
+      </SuspenseLoader>
+    ),
+    errorElement: <Error />,
+    children: [
+      {
+        path: "login",
+        element: (
+          <PageSuspenseFallback>
+            <Login />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "register",
+        element: (
+          <PageSuspenseFallback>
+            <Register />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "forgot-password",
+        element: (
+          <PageSuspenseFallback>
+            <ForgetPassword />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "reset-password",
+        element: (
+          <PageSuspenseFallback>
+            <ResetPassword />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "email-verification",
+        element: (
+          <PageSuspenseFallback>
+            <EmailVerification />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "resend-verification",
+        element: (
+          <PageSuspenseFallback>
+            <ResendVerification />
+          </PageSuspenseFallback>
+        ),
+      },
+    ],
+  },
+
+  // User Dashboard Routes
+  {
+    path: "dashboard",
+    element: (
+      // <ProtectedRoute>
+      <SuspenseLoader>
+        <DashboardLayout />
+      </SuspenseLoader>
+      // </ProtectedRoute>
+    ),
+    errorElement: <Error />,
+    children: [
+      { index: true, element: <Navigate to="profile" replace /> },
+      {
+        path: "profile",
+        element: (
+          <PageSuspenseFallback>
+            <ProfilePage />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "orders",
+        element: (
+          <PageSuspenseFallback>
+            {/* <OrdersPage /> */}
+            <Outlet />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "notifications",
+        element: (
+          <PageSuspenseFallback>
+            {/* <NotificationsPage /> */}
+            <Outlet />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "wishlist",
+        element: (
+          <PageSuspenseFallback>
+            {/* <UserWishlistPage /> */}
+            <Outlet />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "settings",
+        element: (
+          <PageSuspenseFallback>
+            {/* <UserSettingsPage /> */}
+            <Outlet />
+          </PageSuspenseFallback>
+        ),
+      },
+    ],
+  },
+
+  // Seller Routes
+  {
+    path: "seller",
+    element: (
+      <SuspenseLoader>
+        {/* <SellerLayout /> */}
+        <Outlet />
+      </SuspenseLoader>
+    ),
+    errorElement: <Error />,
+    children: [
+      {
+        path: "login",
+        element: (
+          <PageSuspenseFallback>
+            <SellerLogin />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "register",
+        element: (
+          <PageSuspenseFallback>
+            <SellerRegistration />
+          </PageSuspenseFallback>
+        ),
+      },
+      {
+        path: "dashboard",
+        element: (
+          // <ProtectedRoute>
             <PageSuspenseFallback>
               <SellerDashboard />
             </PageSuspenseFallback>
-          ),
-        },
-      ],
-    },
-    {
-      element: <Outlet />,
-      path: "/seller/products/add",
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
-            <PageSuspenseFallback>
-              <ProductForm onSubmit={() => {}} mode={"add"} />
-            </PageSuspenseFallback>
-          ),
-        },
-      ],
-    },
-    {
-      element: <Outlet />,
-      path: "/seller/products/update",
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
-            <PageSuspenseFallback>
-              <ProductForm onSubmit={() => {}} mode={"update"} />
-            </PageSuspenseFallback>
-          ),
-        },
-      ],
-    },
-    {
-      element: <Outlet />,
-      path: "/seller/orders",
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
-            <PageSuspenseFallback>
-              <OrderManagement />
-            </PageSuspenseFallback>
-          ),
-        },
-      ],
-    },
-    {
-      element: <Outlet />,
-      path: "/seller/orders/:id",
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
-            <PageSuspenseFallback>
-              <OrderDetails />
-            </PageSuspenseFallback>
-          ),
-        },
-      ],
-    },
-    {
-      element: <Outlet />,
-      path: "/profile",
-      errorElement: <Error />,
-      children: [
-        {
-          index: true,
-          element: (
-            <PageSuspenseFallback>
-              <UserDashboard />
-            </PageSuspenseFallback>
-          ),
-        },
-      ],
-    },
-  ]
-);
+          // </ProtectedRoute>
+        ),
+      },
+      // {
+      //   path: "products",
+      //   children: [
+      //     {
+      //       path: "add",
+      //       element: (
+      //         <PageSuspenseFallback>
+      //           <ProductForm mode="add" />
+      //         </PageSuspenseFallback>
+      //       ),
+      //     },
+      //     {
+      //       path: "update",
+      //       element: (
+      //         <PageSuspenseFallback>
+      //           <ProductForm mode="update" />
+      //         </PageSuspenseFallback>
+      //       ),
+      //     },
+      //   ],
+      // },
+      {
+        path: "orders",
+        children: [
+          {
+            index: true,
+            element: (
+              <PageSuspenseFallback>
+                <OrderManagement />
+              </PageSuspenseFallback>
+            ),
+          },
+          {
+            path: ":id",
+            element: (
+              <PageSuspenseFallback>
+                <OrderDetails />
+              </PageSuspenseFallback>
+            ),
+          },
+        ],
+      },
+    ],
+  },
+]);
 
 const AppRouter = () => {
   return <RouterProvider router={router} />;
@@ -489,6 +468,496 @@ const AppRouter = () => {
 
 export default AppRouter;
 
+// import { lazy, Suspense } from "react";
+// import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+// // layouts
+// const MainLayout = lazy(() => import("@/layouts/MainLayout"));
+// // const ProfileLayout = lazy(
+// //   () => import("@/layouts/ProfileLayout")
+// // );
+// // components
+// import { LottieHandler, PageSuspenseFallback } from "@/components/feedback";
+// // pages
+// const Home = lazy(() => import("@/pages/customer-facing/Home"));
+// const Wishlist = lazy(() => import("@/pages/customer-facing/Wishlist"));
+// const Categories = lazy(() => import("@/pages/customer-facing/Categories"));
+// const Cart = lazy(() => import("@/pages/customer-facing/Cart"));
+// const Products = lazy(() => import("@/pages/customer-facing/Products"));
+// const Product = lazy(() => import("@/pages/customer-facing/Product"));
+// const Policy = lazy(() => import("@/pages/policy/Policy"));
+// const PrivacyPolicy = lazy(() => import("@/pages/policy/PrivacyAndPolicy"));
+// const TermsAndConditions = lazy(() => import("@/pages/policy/TermsAndConditions"));
+// const ReturnRefundPolicy = lazy(() => import("@/pages/policy/ReturnAndRefundPolicy"));
+// const ShippingPolicy = lazy(() => import("@/pages/policy/ShippingPolicy"));
+// const FAQ = lazy(() => import("@/pages/policy/Faq"));
+// const AboutUs = lazy(() => import("@/pages/customer-facing/AboutUs"));
+// const ContactUs = lazy(() => import("@/pages/customer-facing/ContactUs"));
+// const Login = lazy(() => import("@/pages/auth/Login"));
+// const Register = lazy(() => import("@/pages/auth/Register"));
+// const ForgetPassword = lazy(() => import("@/pages/auth/ForgetPassword"));
+// const ResetPassword = lazy(() => import("@/pages/auth/ResetPassword"));
+// const EmailVerification = lazy(() => import("@/pages/auth/EmailVerification"));
+// const ResendVerification = lazy(() => import("@/pages/auth/ResendVerificationEmail"));
+// const CheckOut = lazy(() => import("@/pages/customer-facing/CheckOut"));
+// const SearchResults = lazy(() =>  import("@/pages/customer-facing/SearchResults"));
+// const Category = lazy(() =>  import( "@/pages/customer-facing/Category"));
+// const OrderTracking = lazy(() =>  import( "@/pages/customer-facing/OrderTracking"));
+// // const Account = lazy(() => import("@/pages/Account"));
+// const UserDashboard = lazy(() => import("@/pages/customer-facing/Dashboard"));
+// const SellerRegistration = lazy(() => import("@/pages/seller/auth/Register"));
+// const SellerDashboard = lazy(() => import( "@/pages/seller/Dashboard"));
+// // const Orders = lazy(() => import("@/pages/Orders"));
+// import Error from "@/pages/Error";
+// import ProductForm from "@/pages/seller/product/Update";
+// import OrderManagement from "@/pages/seller/orders/OrderManagement";
+// import OrderDetails from "@/pages/seller/orders/orderDetails";
+// import SellerLogin from "@/pages/seller/auth/Login";
+// import CustomerServicePage from "@/pages/policy/help";
+
+// // protect route
+// // import ProtectedRoute from "@/components/Auth/ProtectedRoute";
+
+// const router = createBrowserRouter(
+//   [
+//     {
+//       path: "/",
+//       element: (
+//         <Suspense
+//           fallback={
+//             <div style={{ marginTop: "10%" }}>
+//               <LottieHandler type="loading" message="Loading please wait..." />
+//             </div>
+//           }
+//         >
+//           <MainLayout />
+//         </Suspense>
+//       ),
+//       errorElement: <Error />,
+//       children: [
+//         {
+//           index: true,
+//           element: (
+//             <PageSuspenseFallback>
+//               <Home />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         {
+//           path: "/cart",
+//           element: (
+//             <PageSuspenseFallback>
+//               <Cart />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         {
+//           path: "/wishlist",
+//           element: (
+//             // <ProtectedRoute>
+//             <PageSuspenseFallback>
+//               <Wishlist />
+//             </PageSuspenseFallback>
+//             // </ProtectedRoute>
+//           ),
+//         },
+//         {
+//           path: "/checkout",
+//           element: (
+//             <PageSuspenseFallback>
+//               <CheckOut />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         {
+//           path: "/search",
+//           element: (
+//             <PageSuspenseFallback>
+//               <SearchResults />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         {
+//           path: "/categories",
+//           element: (
+//             <PageSuspenseFallback>
+//               <Categories />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         {
+//           path: "/categories/:prefix",
+//           element: (
+//             <PageSuspenseFallback>
+//               <Category />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         {
+//           path: "/products/:prefix",
+//           element: (
+//             <PageSuspenseFallback>
+//               <Product />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         {
+//           path: "/products",
+//           element: (
+//             <PageSuspenseFallback>
+//               <Products />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         {
+//           path: "/policy",
+//           element: (
+//             <PageSuspenseFallback>
+//               <Policy />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         {
+//           path: "/privacy-policy",
+//           element: (
+//             <PageSuspenseFallback>
+//               <PrivacyPolicy />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         {
+//           path: "/terms-conditions",
+//           element: (
+//             <PageSuspenseFallback>
+//               <TermsAndConditions />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         {
+//           path: "/return-refund-policy",
+//           element: (
+//             <PageSuspenseFallback>
+//               <ReturnRefundPolicy />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         {
+//           path: "/shipping-policy",
+//           element: (
+//             <PageSuspenseFallback>
+//               <ShippingPolicy />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         {
+//           path: "/faq",
+//           element: (
+//             <PageSuspenseFallback>
+//               <FAQ />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         {
+//           path: "/help",
+//           element: (
+//             <PageSuspenseFallback>
+//               <CustomerServicePage />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         // {
+//         //   path: "/categories/products/:prefix",
+//         //   element: (
+//         //     <PageSuspenseFallback>
+//         //       <Products />
+//         //     </PageSuspenseFallback>
+//         //   ),
+//         //   loader: ({ params }) => {
+//         //     typeof params.prefix
+//         //     if (
+//         //       typeof params.prefix !== "string" ||
+//         //       !/^[a-z]+$/i.test(params.prefix)
+//         //     ) {
+//         //       throw new Response("Bad Request", {
+//         //         statusText: "Category not found",
+//         //         status: 400,
+//         //       });
+//         //     }
+//         //     return true;
+//         //   },
+//         // },
+//         {
+//           path: "about-us",
+//           element: (
+//             <PageSuspenseFallback>
+//               <AboutUs />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         {
+//           path: "contact-us",
+//           element: (
+//             <PageSuspenseFallback>
+//               <ContactUs />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+
+//         {
+//           path: "order-tracking",
+//           element: (
+//             <PageSuspenseFallback>
+//               <OrderTracking />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//         // {
+//         //   path: "profile",
+//         //   element: (
+//         //     <ProtectedRoute>
+//         //       <PageSuspenseFallback>
+//         //         <ProfileLayout />
+//         //       </PageSuspenseFallback>
+//         //     </ProtectedRoute>
+//         //   ),
+//         //   children: [
+//         //     {
+//         //       index: true,
+//         //       element: (
+//         //         <PageSuspenseFallback>
+//         //           <Account />
+//         //         </PageSuspenseFallback>
+//         //       ),
+//         //     },
+//         //     {
+//         //       path: "orders",
+//         //       element: (
+//         //         <PageSuspenseFallback>
+//         //           <Orders />
+//         //         </PageSuspenseFallback>
+//         //       ),
+//         //     },
+//         //   ],
+//         // },
+//       ],
+//     },
+//     {
+//       element: <Outlet />,
+//       path: "/login",
+//       errorElement: <Error />,
+//       children: [
+//         {
+//           index: true,
+//           element: (
+//             <PageSuspenseFallback>
+//               <Login />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//       ],
+//     },
+//     {
+//       element: <Outlet />,
+//       path: "/register",
+//       errorElement: <Error />,
+//       children: [
+//         {
+//           index: true,
+//           element: (
+//             <PageSuspenseFallback>
+//               <Register />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//       ],
+//     },
+//     {
+//       element: <Outlet />,
+//       path: "/forgot-password",
+//       errorElement: <Error />,
+//       children: [
+//         {
+//           index: true,
+//           element: (
+//             <PageSuspenseFallback>
+//               <ForgetPassword />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//       ],
+//     },
+//     {
+//       element: <Outlet />,
+//       path: "/reset-password",
+//       errorElement: <Error />,
+//       children: [
+//         {
+//           index: true,
+//           element: (
+//             <PageSuspenseFallback>
+//               <ResetPassword />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//       ],
+//     },
+//     {
+//       element: <Outlet />,
+//       path: "/email-verification",
+//       errorElement: <Error />,
+//       children: [
+//         {
+//           index: true,
+//           element: (
+//             <PageSuspenseFallback>
+//               <EmailVerification />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//       ],
+//     },
+//     {
+//       element: <Outlet />,
+//       path: "/resend-verification",
+//       errorElement: <Error />,
+//       children: [
+//         {
+//           index: true,
+//           element: (
+//             <PageSuspenseFallback>
+//               <ResendVerification />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//       ],
+//     },
+//     {
+//       element: <Outlet />,
+//       path: "/seller/register",
+//       errorElement: <Error />,
+//       children: [
+//         {
+//           index: true,
+//           element: (
+//             <PageSuspenseFallback>
+//               <SellerRegistration />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//       ],
+//     },
+//     {
+//       element: <Outlet />,
+//       path: "/seller/login",
+//       errorElement: <Error />,
+//       children: [
+//         {
+//           index: true,
+//           element: (
+//             <PageSuspenseFallback>
+//               <SellerLogin />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//       ],
+//     },
+//     {
+//       element: <Outlet />,
+//       path: "/seller/dashboard",
+//       errorElement: <Error />,
+//       children: [
+//         {
+//           index: true,
+//           element: (
+//             <PageSuspenseFallback>
+//               <SellerDashboard />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//       ],
+//     },
+//     {
+//       element: <Outlet />,
+//       path: "/seller/products/add",
+//       errorElement: <Error />,
+//       children: [
+//         {
+//           index: true,
+//           element: (
+//             <PageSuspenseFallback>
+//               <ProductForm onSubmit={() => {}} mode={"add"} />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//       ],
+//     },
+//     {
+//       element: <Outlet />,
+//       path: "/seller/products/update",
+//       errorElement: <Error />,
+//       children: [
+//         {
+//           index: true,
+//           element: (
+//             <PageSuspenseFallback>
+//               <ProductForm onSubmit={() => {}} mode={"update"} />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//       ],
+//     },
+//     {
+//       element: <Outlet />,
+//       path: "/seller/orders",
+//       errorElement: <Error />,
+//       children: [
+//         {
+//           index: true,
+//           element: (
+//             <PageSuspenseFallback>
+//               <OrderManagement />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//       ],
+//     },
+//     {
+//       element: <Outlet />,
+//       path: "/seller/orders/:id",
+//       errorElement: <Error />,
+//       children: [
+//         {
+//           index: true,
+//           element: (
+//             <PageSuspenseFallback>
+//               <OrderDetails />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//       ],
+//     },
+//     {
+//       element: <Outlet />,
+//       path: "/profile",
+//       errorElement: <Error />,
+//       children: [
+//         {
+//           index: true,
+//           element: (
+//             <PageSuspenseFallback>
+//               <UserDashboard />
+//             </PageSuspenseFallback>
+//           ),
+//         },
+//       ],
+//     },
+//   ]
+// );
+
+// const AppRouter = () => {
+//   return <RouterProvider router={router} />;
+// };
+
+// export default AppRouter;
 
 // import { createBrowserRouter, Navigate } from "react-router-dom";
 
