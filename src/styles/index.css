@@ -68,3 +68,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+@keyframes slide-diagonal {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 60px;
+  }
+}
+
+.animate-slide-diagonal {
+  animation: slide-diagonal 3s linear infinite;
+}
