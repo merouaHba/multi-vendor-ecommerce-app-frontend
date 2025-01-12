@@ -6,8 +6,8 @@ import React, {  ForwardedRef, useState } from "react";
 interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;
   label: string;
-  error?: string; // Optional error message
-  showPasswordToggle?: boolean; // If your component supports showing a password toggle
+  error?: string; 
+  showPasswordToggle?: boolean; //only if password 
 }
 
 const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(

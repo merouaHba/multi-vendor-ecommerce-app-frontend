@@ -9,13 +9,14 @@ import {
 } from "@/components/ui/card";
 import { Loader2, Store, ArrowLeft, ArrowRight } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
-import FormInput from "@/components/form/formInput";
+import FormInput from "@/components/form/FormInput";
+import PhoneInput from "@/components/form/PhoneInput";
 import RegistrationConfirmation from "@/components/form/RegistrationConfirmation";
 import StepIndicator from "@/components/vendor/StepIndicator";
 import  useRegisterSeller  from "@/hooks/useRegisterSeller";
-
-
-
+import { useCountryData, Country, State, City } from '@/hooks/useCountry';
+import { useEffect, useState } from "react";
+import { LocationSelector } from "@/components/form/LocationSelector";
 
 
 
@@ -31,14 +32,112 @@ const SellerRegister = () => {
     resetRegistration,
     submitForm,
     register,
+    setValue,
+    getValues,
     handleSubmit,
     handleNext,
     handleBack,
   } = useRegisterSeller();
 
+  const { userCountry, countries } = useCountryData();
+  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
+  const [selectedState, setSelectedState] = useState<State | null>(null);
+  const [selectedCity, setSelectedCity] = useState<City | null>(null);
+  // Initialize location values from form state
+  useEffect(() => {
+    const formCountry = getValues("storeDetails.country");
+    const formState = getValues("storeDetails.state");
+    const formCity = getValues("storeDetails.city");
+
+    // Restore country selection
+    if (formCountry && !selectedCountry) {
+      const country = countries.find((c) => c.name === formCountry);
+      if (country) {
+        setSelectedCountry(country);
+
+        // Restore state selection
+        if (formState && country.states) {
+          const state = country.states.find((s: State) => s.name === formState);
+          if (state) {
+            setSelectedState(state);
+
+            // Restore city selection
+            if (formCity && state.cities) {
+              const city = state.cities.find((c: City) => c.name === formCity);
+              if (city) {
+                setSelectedCity(city);
+              }
+            }
+          }
+        }
+      }
+    }
+  }, [getValues, countries, currentStep]);
+
+  // Set default country based on user's location
+  useEffect(() => {
+    if (userCountry && !selectedCountry && !getValues("storeDetails.country")) {
+      setSelectedCountry(userCountry);
+      setValue("storeDetails.country", userCountry.name);
+    }
+  }, [userCountry, selectedCountry, setValue, getValues]);
+
+  const handleLocationChange = {
+    country: (country: Country | null) => {
+      setSelectedCountry(country);
+      setSelectedState(null);
+      setSelectedCity(null);
+      setValue("storeDetails.country", country?.name || "", {
+        shouldValidate: true,
+      });
+      setValue("storeDetails.state", "", { shouldValidate: true });
+      setValue("storeDetails.city", "", { shouldValidate: true });
+    },
+    state: (state: State | null) => {
+      setSelectedState(state);
+      setSelectedCity(null);
+      setValue("storeDetails.state", state?.name || "", {
+        shouldValidate: true,
+      });
+      setValue("storeDetails.city", "", { shouldValidate: true });
+    },
+    city: (city: City | null) => {
+      setSelectedCity(city);
+      setValue("storeDetails.city", city?.name || "", { shouldValidate: true });
+    },
+  };
+
+  // Extend handleNext to ensure location data is saved
+  const handleStepNext = async () => {
+    // Save current location data explicitly before moving to next step
+    if (selectedCountry) {
+      setValue("storeDetails.country", selectedCountry.name);
+      if (selectedState) {
+        setValue("storeDetails.state", selectedState.name);
+        if (selectedCity) {
+          setValue("storeDetails.city", selectedCity.name);
+        }
+      }
+    }
+    handleNext();
+  };
+
+  // Extend handleBack to ensure location data is saved
+  const handleStepBack = () => {
+    // Save current location data explicitly before moving to previous step
+    if (selectedCountry) {
+      setValue("storeDetails.country", selectedCountry.name);
+      if (selectedState) {
+        setValue("storeDetails.state", selectedState.name);
+        if (selectedCity) {
+          setValue("storeDetails.city", selectedCity.name);
+        }
+      }
+    }
+    handleBack();
+  };
 
 
-  // Navigation checks
   if (accessToken && user) {
     return user.role === "user" ? (
       <Navigate to="/" />
@@ -61,7 +160,7 @@ const SellerRegister = () => {
       case 0:
         return (
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4">
               <FormInput
                 id={register("firstname").name}
                 label="First name"
@@ -79,69 +178,68 @@ const SellerRegister = () => {
         );
       case 1:
         return (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <FormInput
               id={register("storeName").name}
               label="Store name"
               {...register("storeName")}
               error={formErrors.storeName?.message}
+              placeholder="Enter your store name"
+              className="text-lg"
             />
-            <Card className="w-full">
+            <Card className="w-full shadow-md">
               <CardHeader>
-                <CardTitle className="text-lg font-medium">
-                  Store Details
+                <CardTitle className="text-xl font-semibold text-indigo-600">
+                  Store Location
                 </CardTitle>
+                <CardDescription>
+                  Please provide your store's physical location details
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <FormInput
                     id={register("storeDetails.address").name}
                     label="Street Address"
                     {...register("storeDetails.address", {
-                      required: "Address is required",
+                      required: "Street address is required",
                     })}
                     error={formErrors.storeDetails?.address?.message}
                     placeholder="123 Main St"
+                    className="text-lg"
                   />
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormInput
-                      id={register("storeDetails.city").name}
-                      label="City"
-                      {...register("storeDetails.city", {
-                        required: "City is required",
-                      })}
-                      error={formErrors.storeDetails?.city?.message}
-                      placeholder="New York"
-                    />
-                    <FormInput
-                      id={register("storeDetails.state").name}
-                      label="State"
-                      {...register("storeDetails.state", {
-                        required: "State is required",
-                      })}
-                      error={formErrors.storeDetails?.state?.message}
-                      placeholder="NY"
+
+                  <div className="bg-gray-50 p-6 rounded-lg space-y-6">
+                    <LocationSelector
+                      selectedCountry={selectedCountry}
+                      onCountryChange={handleLocationChange.country}
+                      selectedState={selectedState}
+                      onStateChange={handleLocationChange.state}
+                      selectedCity={selectedCity}
+                      onCityChange={handleLocationChange.city}
+                      errors={{
+                        country: formErrors.storeDetails?.country?.message,
+                        state: formErrors.storeDetails?.state?.message,
+                        city: formErrors.storeDetails?.city?.message,
+                      }}
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormInput
-                      id={register("storeDetails.postalCode").name}
-                      label="Postal Code"
-                      type="number"
-                      {...register("storeDetails.postalCode")}
-                      error={formErrors.storeDetails?.postalCode?.message}
-                      placeholder="10001"
-                    />
-                    <FormInput
-                      id={register("storeDetails.country").name}
-                      label="Country"
-                      {...register("storeDetails.country", {
-                        required: "Country is required",
-                      })}
-                      error={formErrors.storeDetails?.country?.message}
-                      placeholder="United States"
-                    />
-                  </div>
+
+                  <FormInput
+                    id={register("storeDetails.postalCode").name}
+                    label="Postal Code"
+                    type="text"
+                    {...register("storeDetails.postalCode", {
+                      required: "Postal code is required",
+                      pattern: {
+                        value: /^[0-9]{5,10}$/,
+                        message: "Please enter a valid postal code",
+                      },
+                    })}
+                    error={formErrors.storeDetails?.postalCode?.message}
+                    placeholder="10001"
+                    className="text-lg"
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -157,12 +255,12 @@ const SellerRegister = () => {
               {...register("email")}
               error={formErrors.email?.message}
             />
-            <FormInput
-              id={register("mobile").name}
-              label="mobile number"
-              type="tel"
-              {...register("mobile")}
+            <PhoneInput
+              value={getValues("mobile") as string}
+              onChange={(value) => setValue("mobile", value)}
               error={formErrors.mobile?.message}
+              selectedCountry={selectedCountry}
+              onCountryChange={setSelectedCountry}
             />
           </div>
         );
@@ -185,7 +283,8 @@ const SellerRegister = () => {
             />
             <div className="flex items-center">
               <input
-                id="terms"
+                id={register("terms").name}
+                {...register("terms")}
                 type="checkbox"
                 className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
                 required
@@ -248,7 +347,7 @@ const SellerRegister = () => {
               {currentStep > 0 && (
                 <Button
                   type="button"
-                  onClick={handleBack}
+                  onClick={handleStepBack}
                   variant="outline"
                   className="flex items-center"
                 >
@@ -260,7 +359,7 @@ const SellerRegister = () => {
               {currentStep < FORM_STEPS.length - 1 ? (
                 <Button
                   type="button"
-                  onClick={handleNext}
+                  onClick={handleStepNext}
                   className="flex items-center ml-auto"
                 >
                   Next

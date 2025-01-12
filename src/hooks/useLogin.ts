@@ -4,6 +4,7 @@ import { actAuthLogin, resetUI } from "@/store/auth/authSlice";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Cookies from "js-cookie";
 import { signInSchema, signInType } from "@/validations/signInSchema";
 import { toast } from "react-toastify";
 
@@ -50,9 +51,9 @@ const useLogin = (role: "user" | "seller") => {
   };
 
   const submitForm: SubmitHandler<signInType> = async (data) => {
-    const { email, password } = data;
+    const { email, password,rememberMe } = data;
 
-    dispatch(actAuthLogin({ role, email, password }))
+    dispatch(actAuthLogin({ role, email, password, rememberMe }))
       .unwrap()
       .then(() => {
         navigate("/");
@@ -76,11 +77,11 @@ const useLogin = (role: "user" | "seller") => {
 
     useEffect(() => {
 
-      const error = searchParams.get("error");
+      const error = Cookies.get("error");
 
       if (error) {
 
-          toast.error( decodeURIComponent(error), {
+          toast.error( error, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,

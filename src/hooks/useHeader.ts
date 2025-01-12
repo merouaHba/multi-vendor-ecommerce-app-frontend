@@ -1,9 +1,21 @@
-import { actAuthLogout } from "@/store/auth/authSlice";
+import  Cookies  from 'js-cookie';
+import { authLogin, actAuthLogout } from "@/store/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
 const useHeader = () => {
+  const CheckCookies = () => {
+    
+    const accessToken = Cookies.get("accessToken");
+    const user = Cookies.get("user");
+    if(accessToken && user){
+      authLogin({ accessToken, user })
+      Cookies.remove("accessToken");
+      Cookies.remove("user");
+    }
+  }
+  CheckCookies()
   const dispatch = useAppDispatch();
   const { error, loading, accessToken, user } = useAppSelector(
     (state) => state.auth

@@ -11,7 +11,7 @@ import {Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Link, Navigate } from "react-router-dom";
 import useRegister from "@/hooks/useRegister";
-import FormInput from "@/components/form/formInput";
+import FormInput from "@/components/form/FormInput";
 import GoogleIcon from "@/components/common/GoogleIcon";
 import FacebookIcon from "@/components/common/FacebookIcon";
 import AppleIcon from "@/components/common/AppleIcon";
@@ -145,7 +145,8 @@ import RegistrationConfirmation from "@/components/form/RegistrationConfirmation
              />
              <div className="flex items-center">
                <input
-                 id="terms"
+                 id={register("terms").name}
+                  {...register("terms")}
                  type="checkbox"
                  className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
                  required

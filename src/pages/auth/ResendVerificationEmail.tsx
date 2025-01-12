@@ -9,7 +9,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Loader2, Mail, CheckCircle2, ExternalLink } from "lucide-react";
-import FormInput from "@/components/form/formInput";
+import FormInput from "@/components/form/FormInput";
 import { useForm } from "react-hook-form";
 import { isAxiosError } from "axios";
 import { axiosErrorHandler } from "@/utils";

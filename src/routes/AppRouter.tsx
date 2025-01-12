@@ -382,9 +382,7 @@ const router = createBrowserRouter([
     path: "seller",
     element: (
       <SuspenseLoader>
-          <ProtectedRoute role="seller">
           <Outlet />
-      </ProtectedRoute>
         </SuspenseLoader>
     ),
     errorElement: <Error />,
@@ -408,15 +406,22 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: (
-          // <ProtectedRoute>
           <PageSuspenseFallback>
+           <ProtectedRoute role="seller">
             <SellerDashboard />
+      </ProtectedRoute>
           </PageSuspenseFallback>
-          // </ProtectedRoute>
         ),
       },
       // {
       //   path: "products",
+      //   element: (
+      //     <PageSuspenseFallback>
+      //      <ProtectedRoute role="seller">
+      //       <Outlet />
+      // </ProtectedRoute>
+      //     </PageSuspenseFallback>
+      //   ),
       //   children: [
       //     {
       //       path: "add",

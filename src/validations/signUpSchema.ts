@@ -94,6 +94,9 @@ const signUpSchema = z
 
     isSeller: z.boolean().optional(),
     storeDetails: storeDetailsSchema.optional(),
+    terms: z
+      .boolean()
+      .refine((value) => value, { message: "You must agree to the terms" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -113,8 +116,7 @@ const signUpSchema = z
   .refine(
     (data) =>
       !data.isSeller ||
-      (data.storeDetails &&
-        Object.keys(data.storeDetails).length > 0 ),
+      (data.storeDetails && Object.keys(data.storeDetails).length > 0),
     {
       message: "Store Details are required for sellers",
       path: ["storeDetails"],

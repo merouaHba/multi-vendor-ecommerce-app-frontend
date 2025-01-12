@@ -7,6 +7,7 @@ type TFormData = {
   lastname: string;
   email: string;
   password: string;
+  terms: boolean;
 };
 
 const actAuthRegister = createAsyncThunk(

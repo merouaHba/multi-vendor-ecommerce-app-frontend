@@ -1,103 +1,3 @@
-// import { useEffect, useState } from "react";
-// import { useAppDispatch, useAppSelector } from "@/store/hooks";
-// import { actAuthRegister, resetUI } from "@/store/auth/authSlice";
-// import { useForm, SubmitHandler } from "react-hook-form";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import { signUpSchema, signUpType } from "@/validations/signUpSchema";
-// import { toast } from "react-toastify";
-// const useRegister = (role: "user" | "seller") => {
-//   const dispatch = useAppDispatch();
-//   const [email, setEmail] = useState("");
-
-//   const { loading, error, accessToken, user } = useAppSelector(
-//     (state) => state.auth
-//   );
-
-//   const {
-//     register,
-//     handleSubmit,
-//     reset,
-//     formState: { errors: formErrors },
-//   } = useForm<signUpType>({
-//     mode: "onBlur",
-//     resolver: zodResolver(signUpSchema),
-//     defaultValues: {
-//       isSeller: role==="seller"?true:false, 
-//     },
-//   });
-
-//   const submitForm: SubmitHandler<signUpType> = async (data) => {
-//     const { firstname, lastname, email, password } = data;
-//     dispatch(actAuthRegister({ firstname, lastname, email, password }))
-//       .unwrap() // to confirm that the dispatch finich
-//       .then(() => {
-//         setEmail(email);
-//         reset();
-//       })
-//       .catch((error) => {
-//         toast.error(error, {
-//           position: "top-right",
-//           autoClose: 5000,
-//           hideProgressBar: false,
-//           closeOnClick: false,
-//           pauseOnHover: true,
-//           draggable: true,
-//           progress: undefined,
-//           theme: "colored",
-//         });
-//       });
-//   };
-//   const resetRegistration = () => {
-//     dispatch(resetUI());
-//     reset();
-//   };
-
- 
-//   const GoogleOAuth = async () => {
-//     const baseUrl = import.meta.env.VITE_API_URL;
-//     window.location.href = `${baseUrl}/auth/google?role=${role} `;
-//   };
-
-//   const FacebookOAuth = () => {
-//     const baseUrl = import.meta.env.VITE_API_URL;
-//     window.location.href = `${baseUrl}/auth/facebook?role=${role} `;
-//   };
-//   const AppleOAuth = () => {
-//     toast.warn("This feature is not available yet", {
-//       position: "top-right",
-//       autoClose: 5000,
-//       hideProgressBar: false,
-//       closeOnClick: false,
-//       pauseOnHover: true,
-//       draggable: true,
-//       progress: undefined,
-//       theme: "colored",
-//     });
-//   };
-//   useEffect(() => {
-//     return () => {
-//       dispatch(resetUI());
-//     };
-//   }, [dispatch]);
-
-//   return {
-//     loading,
-//     error,
-//     accessToken,
-//      user,
-//     formErrors,
-//     email,
-//     submitForm,
-//     register,
-//     handleSubmit,
-//     GoogleOAuth,
-//     FacebookOAuth,
-//     AppleOAuth,
-//     resetRegistration,
-//   };
-// };
-
-// export default useRegister;
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { actAuthRegister, resetUI } from "@/store/auth/authSlice";
@@ -150,6 +50,7 @@ const useRegister = (role: "user" | "seller") => {
         mobile,
         storeName,
         storeDetails,
+        terms
       } = data;
 
       // Prepare registration data based on role
@@ -164,12 +65,14 @@ const useRegister = (role: "user" | "seller") => {
               storeName,
               storeDetails,
               role: "seller",
+              terms,
             }
           : {
               firstname,
               lastname,
               email,
               password,
+              terms,
             };
 
       await dispatch(actAuthRegister(registrationData)).unwrap();

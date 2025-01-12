@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import FormInput from "@/components/form/formInput";
+import FormInput from "@/components/form/FormInput";
 import {
   CheckCircle2,
   XCircle,

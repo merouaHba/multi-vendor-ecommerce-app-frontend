@@ -274,7 +274,7 @@ const Header = () => {
             <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
               <Store className="h-8 w-8 text-indigo-600" />
               <span className="text-xl font-bold text-indigo-600 hidden sm:block">
-                MultiMart
+                Vendorly
               </span>
             </Link>
 
@@ -294,8 +294,8 @@ const Header = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-6">
-              {/* Become a Seller Link - Show only if authenticated */}
-              {isAuthenticated && (
+              {/* Become a Seller Link - Show only if not authenticated */}
+              {!isAuthenticated && (
                 <Link
                   to="/seller/register"
                   className="text-indigo-600 hover:text-indigo-800 font-medium transition-colors flex items-center space-x-1"
@@ -435,12 +435,7 @@ const Header = () => {
                 >
                   Orders
                 </Link>
-                <Link
-                  to="/seller/register"
-                  className="block px-3 py-2 text-base font-medium text-indigo-600 hover:text-indigo-800"
-                >
-                  Become a Seller
-                </Link>
+              
                 <button
                   onClick={logout}
                   className="block w-full text-left px-3 py-2 text-base font-medium text-red-600 hover:text-red-800"
@@ -461,6 +456,12 @@ const Header = () => {
                   className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-indigo-600"
                 >
                   Register
+                </Link>
+                  <Link
+                  to="/seller/register"
+                  className="block px-3 py-2 text-base font-medium text-indigo-600 hover:text-indigo-800"
+                >
+                  Become a Seller
                 </Link>
               </>
             )}
@@ -520,7 +521,7 @@ const Header = () => {
 //             <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
 //               <Store className="h-8 w-8 text-indigo-600" />
 //               <span className="text-xl font-bold text-indigo-600 hidden sm:block">
-//                 MultiMart
+//                 Vendorly
 //               </span>
 //             </Link>
 

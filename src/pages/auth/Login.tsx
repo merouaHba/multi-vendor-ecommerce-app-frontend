@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import useLogin from "@/hooks/useLogin";
-import FormInput from "@/components/form/formInput";
+import FormInput from "@/components/form/FormInput";
 import GoogleIcon from "@/components/common/GoogleIcon";
 import FacebookIcon from "@/components/common/FacebookIcon";
 import AppleIcon from "@/components/common/AppleIcon";
@@ -127,7 +127,8 @@ const {
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <input
-                  id="remember-me"
+                  id={register("rememberMe").name}
+                  {...register("rememberMe")}
                   type="checkbox"
                   className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
                 />
@@ -136,7 +137,9 @@ const {
                 </Label>
               </div>
               <p
-                onClick={() =>navigate('/forgot-password', { state: { from: '/login' } })}
+                onClick={() =>
+                  navigate("/forgot-password", { state: { from: "/login" } })
+                }
                 className="text-sm text-indigo-600 hover:text-indigo-500"
               >
                 Forgot password?
