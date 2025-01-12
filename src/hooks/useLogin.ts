@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Cookies from "js-cookie";
 import { signInSchema, signInType } from "@/validations/signInSchema";
 import { toast } from "react-toastify";
+import getCookie from "@/utils/getCookie";
 
 const useLogin = (role: "user" | "seller") => {
   const dispatch = useAppDispatch();
@@ -77,7 +78,7 @@ const useLogin = (role: "user" | "seller") => {
 
     useEffect(() => {
 
-      const error = Cookies.get("error");
+      const error = getCookie("error");
 
       if (error) {
 
@@ -91,9 +92,8 @@ const useLogin = (role: "user" | "seller") => {
             progress: undefined,
             theme: "colored",
           });
-        // Clean URL
-        window.history.replaceState({}, document.title, window.location.pathname);
-        return;
+        Cookies.remove("error");
+        
       }
 
        return () => {
