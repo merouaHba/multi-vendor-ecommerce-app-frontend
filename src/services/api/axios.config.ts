@@ -1,5 +1,3 @@
-import { SetUser } from '@/store/auth/authSlice';
-import { useAppDispatch } from '@/store/hooks';
 import axios from "axios";
 
 
@@ -37,8 +35,6 @@ api.interceptors.response.use(
                 const response = await api.get('/auth/refresh-token');
                 const { accessToken } = response.data;
               localStorage.setItem('accessToken', accessToken);
-              const dispatch = useAppDispatch();
-              dispatch(SetUser({accessToken}));
                 return api(originalRequest);
             } catch (error) {
                 
