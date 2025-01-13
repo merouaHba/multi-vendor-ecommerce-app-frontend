@@ -1,5 +1,6 @@
+import { SetUser } from '@/store/auth/authSlice';
+import { useAppDispatch } from '@/store/hooks';
 import axios from "axios";
-
 
 
 const api = axios.create({
@@ -35,12 +36,14 @@ api.interceptors.response.use(
             try {
                 const response = await api.get('/auth/refresh-token');
                 const { accessToken } = response.data;
-                localStorage.setItem('accessToken', accessToken);
+              localStorage.setItem('accessToken', accessToken);
+              const dispatch = useAppDispatch();
+              dispatch(SetUser({accessToken}));
                 return api(originalRequest);
             } catch (error) {
                 
                 // Handle unauthorized access
-                localStorage.removeItem('token');
+                // localStorage.removeItem('token');
                 localStorage.removeItem('accessToken');
                 window.location.href = '/login';
                 return Promise.reject(error);

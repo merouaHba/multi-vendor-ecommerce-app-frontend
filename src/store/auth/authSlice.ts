@@ -32,6 +32,10 @@ const authSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       localStorage.setItem("accessToken", action.payload.accessToken);
     },
+    SetUser: (state, action) => {
+      if (action.payload.user) state.user = action.payload.user;
+     if (action.payload.accessToken) state.accessToken = action.payload.accessToken;
+    },
     resetUI: (state) => {
       state.loading = "idle";
       state.error = null;
@@ -187,5 +191,5 @@ export {
   actDeleteProfilePicture,
   actUpdatePassword,
 };
-export const { resetUI, authLogout, authLogin } = authSlice.actions;
+export const { resetUI, authLogout, authLogin, SetUser } = authSlice.actions;
 export default authSlice.reducer;

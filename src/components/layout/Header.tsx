@@ -424,7 +424,7 @@ const Header = () => {
                   <p className="text-xs text-gray-500">{user?.email}</p>
                 </div>
                 <Link
-                  to="/profile"
+                  to="/dashboard/profile"
                   className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-indigo-600"
                 >
                   Profile
