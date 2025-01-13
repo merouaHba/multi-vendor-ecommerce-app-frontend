@@ -140,7 +140,7 @@ const {
                 onClick={() =>
                   navigate("/forgot-password", { state: { from: "/login" } })
                 }
-                className="text-sm text-indigo-600 hover:text-indigo-500"
+                className="text-sm text-indigo-600 hover:text-indigo-500 cursor-pointer"
               >
                 Forgot password?
               </p>
