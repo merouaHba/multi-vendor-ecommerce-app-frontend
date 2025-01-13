@@ -75,26 +75,34 @@ const useLogin = (role: "user" | "seller") => {
         });
       });
   };
+  useEffect(() => {
+    const cookieSet = searchParams.get("cookieSet");
+    if (cookieSet === "true") {
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, "", newUrl);
+      window.location.reload();
+    } else {
+          const error = getCookie("error");
 
-    useEffect(() => {
+          if (error) {
+            toast.error(error, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+            Cookies.remove("error");
+          }
+    }
+  }, [dispatch, searchParams]);
+  useEffect(() => {
+     
 
-      const error = getCookie("error");
-
-      if (error) {
-
-          toast.error( error, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
-        Cookies.remove("error");
-        
-      }
+  
 
        return () => {
          dispatch(resetUI());
