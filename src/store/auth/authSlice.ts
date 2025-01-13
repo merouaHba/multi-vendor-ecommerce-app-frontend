@@ -83,7 +83,6 @@ const authSlice = createSlice({
     builder.addCase(actAuthLogout.pending, (state) => {
       state.loading = "pending";
       state.error = null;      
-      localStorage.removeItem("accessToken");
     });
     builder.addCase(actAuthLogout.fulfilled, (state) => {
       state.loading = "succeeded";
