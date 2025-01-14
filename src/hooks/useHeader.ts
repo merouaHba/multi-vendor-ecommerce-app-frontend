@@ -30,7 +30,7 @@ const cookieSet = searchParams.get('cookieSet')
       }
       setCookies()
 }
-  }, [])
+  }, [searchParams, setSearchParams]);
   const { error, loading, accessToken, user } = useAppSelector(
     (state) => state.auth
   );
