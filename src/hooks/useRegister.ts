@@ -5,9 +5,13 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema, signUpType } from "@/validations/signUpSchema";
 import { toast } from "react-toastify";
+import { useSearchParams } from "react-router-dom";
+import axios from "@/services/api/axios.config";
 
 const useRegister = (role: "user" | "seller") => {
   const dispatch = useAppDispatch();
+    const [searchParams] = useSearchParams();
+  
   const [email, setEmail] = useState("");
 
   const { loading, error, accessToken, user } = useAppSelector(
@@ -135,11 +139,34 @@ const useRegister = (role: "user" | "seller") => {
     });
   };
 
-  useEffect(() => {
-    return () => {
-      dispatch(resetUI());
-    };
-  }, [dispatch]);
+    useEffect(() => {
+      const cookieSet = searchParams.get("cookieSet");
+      const getError = async () => {
+        const {
+          data: { error },
+        } = await axios.get("/auth/check-error-cookies");
+        if (error) {
+          toast.error(error, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+      };
+      if (cookieSet === "true") {
+        getError();
+        searchParams.delete("cookieSet");
+      }
+
+      return () => {
+        dispatch(resetUI());
+      };
+    }, [searchParams, dispatch]);
 
   return {
     loading,

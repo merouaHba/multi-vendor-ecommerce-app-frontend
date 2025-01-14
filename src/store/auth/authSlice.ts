@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import actAuthRegister from "./act/actAuthRegister";
 import actAuthLogin from "./act/actAuthLogin";
 import actGetUser from "./act/actGetUser";
+import actSetUser from "./act/actSetUser";
 import actUpdateUser from "./act/actUpdateUser";
 import actDeleteProfilePicture from "./act/actDeleteProfilePicture";
 import actUpdateProfilePicture from "./act/actUpdateProfilePicture";
@@ -105,10 +106,24 @@ const authSlice = createSlice({
     builder.addCase(actGetUser.fulfilled, (state, action) => {
       state.loading = "succeeded";
       state.user = action.payload.user;
-      state.accessToken = action.payload.accessToken;
-      localStorage.setItem("accessToken", action.payload.accessToken);
     });
     builder.addCase(actGetUser.rejected, (state, action) => {
+      state.loading = "failed";
+      if (isString(action.payload)) {
+        state.error = action.payload;
+      }
+    });
+    // Set user
+    builder.addCase(actSetUser.pending, (state) => {
+      state.loading = "pending";
+      state.error = null;
+    });
+    builder.addCase(actSetUser.fulfilled, (state, action) => {
+      state.loading = "succeeded";
+      state.user = action.payload.user;
+      state.accessToken = action.payload.accessToken;
+    });
+    builder.addCase(actSetUser.rejected, (state, action) => {
       state.loading = "failed";
       if (isString(action.payload)) {
         state.error = action.payload;
@@ -193,6 +208,7 @@ export {
   actUpdateProfilePicture,
   actDeleteProfilePicture,
   actUpdatePassword,
+  actSetUser,
 };
 export const { resetUI, authLogout, authLogin, SetUser } = authSlice.actions;
 export default authSlice.reducer;

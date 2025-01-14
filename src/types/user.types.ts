@@ -20,3 +20,6 @@ export type TSeller= {
   email: string;
   mobile: string;
 };
+
+
+export type UserRole = "user" | "seller" | "admin";

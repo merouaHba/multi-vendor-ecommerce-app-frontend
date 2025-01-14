@@ -5,7 +5,6 @@ import { TUser } from "@/types";
 
 type TResponse = {
   user: TUser;
-  accessToken:string;
 };
 
 const actGetUser = createAsyncThunk(

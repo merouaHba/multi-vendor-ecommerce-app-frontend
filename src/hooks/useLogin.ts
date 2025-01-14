@@ -4,9 +4,9 @@ import { actAuthLogin, resetUI } from "@/store/auth/authSlice";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Cookies from "js-cookie";
 import { signInSchema, signInType } from "@/validations/signInSchema";
 import { toast } from "react-toastify";
+import axios from "@/services/api/axios.config";
 
 const useLogin = (role: "user" | "seller") => {
   const dispatch = useAppDispatch();
@@ -76,12 +76,14 @@ const useLogin = (role: "user" | "seller") => {
   };
 
     useEffect(() => {
-
-      const error = Cookies.get("error");
-
-      if (error) {
-
-          toast.error( error, {
+ const cookieSet = searchParams.get("cookieSet");
+      const getError = async () => {
+      
+        const { data: { error } } = await axios.get(
+          "/auth/check-error-cookies"
+        );
+        if (error) {
+          toast.error(error, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -91,10 +93,14 @@ const useLogin = (role: "user" | "seller") => {
             progress: undefined,
             theme: "colored",
           });
-        // Clean URL
-        window.history.replaceState({}, document.title, window.location.pathname);
-        return;
+        }
       }
+ if (cookieSet === "true") {
+   getError()
+   searchParams.delete("cookieSet");
+ }
+      
+
 
        return () => {
          dispatch(resetUI());

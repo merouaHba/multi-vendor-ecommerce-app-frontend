@@ -1,4 +1,4 @@
-import {  actAuthLogout, actGetUser } from "@/store/auth/authSlice";
+import { actAuthLogout, actSetUser } from "@/store/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -12,7 +12,7 @@ const useHeader = () => {
     const cookieSet = searchParams.get('cookieSet')
     
     if (cookieSet === "true") {
-                dispatch(actGetUser());
+                dispatch(actSetUser());
 
 
     }
