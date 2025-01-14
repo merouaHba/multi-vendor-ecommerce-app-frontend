@@ -118,12 +118,12 @@ const useRegister = (role: "user" | "seller") => {
 
   const GoogleOAuth = async () => {
     const baseUrl = import.meta.env.VITE_API_URL;
-    window.location.href = `${baseUrl}/auth/google?role=${role}`;
+    window.location.href = `${baseUrl}/auth/google?role=${role}&redirect=register`;
   };
 
   const FacebookOAuth = () => {
     const baseUrl = import.meta.env.VITE_API_URL;
-    window.location.href = `${baseUrl}/auth/facebook?role=${role}`;
+    window.location.href = `${baseUrl}/auth/facebook?role=${role}&redirect=register`;
   };
 
   const AppleOAuth = () => {
