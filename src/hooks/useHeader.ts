@@ -43,7 +43,7 @@ const useHeader = () => {
 
     }
       CheckCookies();
-  }, [searchParams, setSearchParams]);
+  }, [searchParams, setSearchParams, dispatch]);
   const { error, loading, accessToken, user } = useAppSelector(
     (state) => state.auth
   );
