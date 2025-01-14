@@ -20,15 +20,19 @@ const useHeader = () => {
         Cookies.remove("user");
       }
     }
-const cookieSet = searchParams.get('cookieSet')
+    const cookieSet = searchParams.get('cookieSet')
+    
     if (cookieSet === "true") {
       const setCookies = async () => {
         await axios.get('/auth/set-cookie')
-        await CheckCookies();
-        setSearchParams({  });
+        
+       
+        setSearchParams({});
       }
       setCookies()
-}
+
+    }
+      CheckCookies();
   }, [searchParams, setSearchParams]);
   const { error, loading, accessToken, user } = useAppSelector(
     (state) => state.auth
