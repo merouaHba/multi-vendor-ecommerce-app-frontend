@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useSearchParams } from 'react-router-dom';
 import axios from "@/services/api/axios.config";
+import getCookie from '@/utils/getCookie';
 
 const useHeader = () => {
     const dispatch = useAppDispatch();
@@ -12,13 +13,22 @@ const useHeader = () => {
   useEffect(() => {
     const CheckCookies = async() => {
     
-      const accessToken = Cookies.get("accessToken");
-      const user = Cookies.get("user");
-      if (accessToken && user) {
-        authLogin({ accessToken, user })
-        Cookies.remove("accessToken");
-        Cookies.remove("user");
-      }
+        const accessToken = getCookie("accessToken");
+
+        let user;
+        try {
+          user = JSON.parse(getCookie("user") as string);
+          console.log(user, accessToken);
+        } catch (error) {
+          console.log(error);
+          return;
+        }
+        if (accessToken && user) {
+          dispatch(authLogin({ accessToken, user }));
+          Cookies.remove("accessToken");
+          Cookies.remove("user");
+        }
+   
     }
     const cookieSet = searchParams.get('cookieSet')
     
