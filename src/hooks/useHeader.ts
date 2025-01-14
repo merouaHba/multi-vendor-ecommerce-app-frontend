@@ -1,4 +1,4 @@
-import { authLogin, actAuthLogout } from "@/store/auth/authSlice";
+import { authLogin, actAuthLogout, actGetUser } from "@/store/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useState,useEffect } from "react";
 import { toast } from "react-toastify";
@@ -10,28 +10,31 @@ const useHeader = () => {
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
   useEffect(() => {
-    const cookieSet = searchParams.get("cookieSet");
-    if (cookieSet === 'true') {
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, '', newUrl);
-      window.location.reload();
-    } else {
-         const accessToken = getCookie("accessToken");
-
-         let user;
-         try {
-           user = JSON.parse(getCookie("user") as string);
-           console.log(user, accessToken);
-         } catch (error) {
-           console.log(error);
-           return;
-         }
-         if (accessToken && user) {
-           dispatch(authLogin({ accessToken, user }));
-           Cookies.remove("accessToken");
-           Cookies.remove("user");
-         }
+    const getUser = async() => {
+      
+      const cookieSet = searchParams.get("cookieSet");
+      if (cookieSet === 'true') {
+               await dispatch(actGetUser()).unwrap();
+  
+      } else {
+           const accessToken = getCookie("accessToken");
+  
+           let user;
+           try {
+             user = JSON.parse(getCookie("user") as string);
+             console.log(user, accessToken);
+           } catch (error) {
+             console.log(error);
+             return;
+           }
+           if (accessToken && user) {
+             dispatch(authLogin({ accessToken, user }));
+             Cookies.remove("accessToken");
+             Cookies.remove("user");
+           }
+      }
     }
+    getUser();
   }
     , [dispatch, searchParams]);
  
