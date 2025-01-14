@@ -1,47 +1,22 @@
-import { authLogin, actAuthLogout, actGetUser } from "@/store/auth/authSlice";
+import  Cookies  from 'js-cookie';
+import { authLogin, actAuthLogout } from "@/store/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useState,useEffect } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
-import getCookie from '@/utils/getCookie';
-import Cookies from "js-cookie";
-import { useSearchParams } from "react-router-dom";
 
 const useHeader = () => {
-  const dispatch = useAppDispatch();
-  const [searchParams, setSearchParams] = useSearchParams();
-  useEffect(() => {
-    const getUser = async() => {
-      
-      const cookieSet = searchParams.get("cookieSet");
-      if (cookieSet === 'true') {
-      
-        await dispatch(actGetUser()).unwrap()
-          setSearchParams({});
-        
-  
-      } else {
-           const accessToken = getCookie("accessToken");
-  
-           let user;
-           try {
-             user = JSON.parse(getCookie("user") as string);
-             console.log(user, accessToken);
-           } catch (error) {
-             console.log(error);
-             return;
-           }
-           if (accessToken && user) {
-             dispatch(authLogin({ accessToken, user }));
-             Cookies.remove("accessToken");
-             Cookies.remove("user");
-           }
-      }
+  const CheckCookies = () => {
+    
+    const accessToken = Cookies.get("accessToken");
+    const user = Cookies.get("user");
+    if(accessToken && user){
+      authLogin({ accessToken, user })
+      Cookies.remove("accessToken");
+      Cookies.remove("user");
     }
-    getUser();
   }
-    , [dispatch, searchParams]);
- 
-
+  CheckCookies()
+  const dispatch = useAppDispatch();
   const { error, loading, accessToken, user } = useAppSelector(
     (state) => state.auth
   );

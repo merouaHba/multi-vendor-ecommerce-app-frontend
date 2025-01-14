@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Cookies from "js-cookie";
 import { signInSchema, signInType } from "@/validations/signInSchema";
 import { toast } from "react-toastify";
-import getCookie from "@/utils/getCookie";
 
 const useLogin = (role: "user" | "seller") => {
   const dispatch = useAppDispatch();
@@ -75,34 +74,27 @@ const useLogin = (role: "user" | "seller") => {
         });
       });
   };
-  useEffect(() => {
-    const cookieSet = searchParams.get("cookieSet");
-    if (cookieSet === "true") {
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, "", newUrl);
-      window.location.reload();
-    } else {
-          const error = getCookie("error");
 
-          if (error) {
-            toast.error(error, {
-              position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
-            });
-            Cookies.remove("error");
-          }
-    }
-  }, [dispatch, searchParams]);
-  useEffect(() => {
-     
+    useEffect(() => {
 
-  
+      const error = Cookies.get("error");
+
+      if (error) {
+
+          toast.error( error, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        // Clean URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+      }
 
        return () => {
          dispatch(resetUI());
