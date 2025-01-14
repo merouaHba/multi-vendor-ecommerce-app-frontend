@@ -28,8 +28,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
    async (error) => {
-        const originalRequest = error.config;
-        // Check if the error is due to unauthorized access and we have not tried refreshing yet 
+     const originalRequest = error.config;
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
@@ -39,9 +38,7 @@ api.interceptors.response.use(
                 return api(originalRequest);
             } catch (error) {
                 
-                // Handle unauthorized access
-                // localStorage.removeItem('token');
-                localStorage.removeItem('accessToken');
+              localStorage.removeItem('accessToken');
                 window.location.href = '/login';
                 return Promise.reject(error);
             }

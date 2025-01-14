@@ -57,7 +57,6 @@ const useRegister = (role: "user" | "seller") => {
         terms
       } = data;
 
-      // Prepare registration data based on role
       const registrationData =
         role === "seller"
           ? {
@@ -83,7 +82,6 @@ const useRegister = (role: "user" | "seller") => {
       setEmail(email);
       reset();
 
-      // Show success message
       toast.success("Registration successful!", {
         position: "top-right",
         autoClose: 5000,

@@ -39,58 +39,52 @@ export default function ProfilePage() {
 
   if (loading === "pending" && !user) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center min-h-[calc(100vh-4rem)]">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
-      <div className="space-y-6">
+    <div className="container mx-auto px-4 py-4 sm:py-8 max-w-2xl">
+      <div className="space-y-4 sm:space-y-6">
         {/* Profile Picture Section */}
-        <Card>
-          <CardHeader>
-            {/* <CardTitle>Profile Picture</CardTitle> */}
-          </CardHeader>
-          <CardContent>
+        <Card className="overflow-hidden">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex flex-col items-center gap-4">
               <div className="relative">
-                <Avatar className="h-32 w-32">
-                  <AvatarImage
-                    src={user?.profilePicture}
-                    alt={user?.name}
-                  />
-                  <AvatarFallback>
+                <Avatar className="h-24 w-24 sm:h-32 sm:w-32">
+                  <AvatarImage src={user?.profilePicture} alt={user?.name} />
+                  <AvatarFallback className="text-lg sm:text-xl">
                     {user?.name
-                          ?.split(" ")
-                          .map((n: string) => n[0])
-                          .join("")
-                          .toUpperCase()}
+                      ?.split(" ")
+                      .map((n: string) => n[0])
+                      .join("")
+                      .toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div className="absolute bottom-0 right-0 flex gap-2">
                   <label
                     htmlFor="avatar-upload"
-                    className="p-2 bg-primary text-white rounded-full cursor-pointer hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-1.5 sm:p-2 bg-primary text-white rounded-full cursor-pointer hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isUploading ? (
-                      <Loader2 className="h-5 w-5 animate-spin" />
+                      <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
                     ) : (
-                      <Camera className="h-5 w-5" />
+                      <Camera className="h-4 w-4 sm:h-5 sm:w-5" />
                     )}
                   </label>
                   {user?.profilePicture && (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <button
-                          className="p-2 bg-destructive text-white rounded-full cursor-pointer hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="p-1.5 sm:p-2 bg-destructive text-white rounded-full cursor-pointer hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
                           disabled={isUploading}
                         >
-                          <Trash2 className="h-5 w-5" />
+                          <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
                         </button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent>
+                      <AlertDialogContent className="sm:max-w-[425px]">
                         <AlertDialogHeader>
                           <AlertDialogTitle>
                             Remove Profile Picture?
@@ -122,7 +116,7 @@ export default function ProfilePage() {
                   disabled={isUploading}
                 />
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground text-center px-2">
                 Click the camera icon to update your profile picture
                 {user?.profilePicture && " or the trash icon to remove it"}
               </p>
@@ -139,6 +133,7 @@ export default function ProfilePage() {
           handleProfileSubmit={handleProfileSubmit}
           submitProfileForm={submitProfileForm}
         />
+
         {/* Password Section */}
         <Card>
           <CardHeader>
@@ -156,47 +151,53 @@ export default function ProfilePage() {
                 className="space-y-4"
               >
                 <div className="grid gap-4">
-                  <div>
+                  <div className="space-y-2">
                     <label className="text-sm text-muted-foreground">
                       Current Password
                     </label>
                     <Input
                       type="password"
                       {...registerPassword("currentPassword")}
+                      className="w-full sm:w-2/3"
                     />
                     {passwordErrors.currentPassword && (
-                      <p className="text-sm text-destructive mt-1">
+                      <p className="text-sm text-destructive">
                         {passwordErrors.currentPassword.message}
                       </p>
                     )}
                   </div>
-                  <div>
+                  <div className="space-y-2">
                     <label className="text-sm text-muted-foreground">
                       New Password
                     </label>
-                    <Input type="password" {...registerPassword("password")} />
+                    <Input
+                      type="password"
+                      {...registerPassword("password")}
+                      className="w-full sm:w-2/3"
+                    />
                     {passwordErrors.password && (
-                      <p className="text-sm text-destructive mt-1">
+                      <p className="text-sm text-destructive">
                         {passwordErrors.password.message}
                       </p>
                     )}
                   </div>
-                  <div>
+                  <div className="space-y-2">
                     <label className="text-sm text-muted-foreground">
                       Confirm New Password
                     </label>
                     <Input
                       type="password"
                       {...registerPassword("confirmPassword")}
+                      className="w-full sm:w-2/3"
                     />
                     {passwordErrors.confirmPassword && (
-                      <p className="text-sm text-destructive mt-1">
+                      <p className="text-sm text-destructive">
                         {passwordErrors.confirmPassword.message}
                       </p>
                     )}
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Button type="submit" disabled={loading === "pending"}>
                     {loading === "pending" && (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

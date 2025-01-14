@@ -10,7 +10,6 @@ import {
 } from "react-hook-form";
 import { TLoading, TUser } from "@/types";
 
-// type ProfileFormData = Omit<TUser,"name"| "id" | "role" | "profilePicture">;
 
 interface ProfileFormData {
   firstname: string;
@@ -19,7 +18,7 @@ interface ProfileFormData {
 
   email: string;
 
-  mobile?: string | null;
+  mobile: string;
 
   address?: string;
 }
@@ -43,8 +42,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   submitProfileForm,
 }) => {
   const [isEditing, setIsEditing] = React.useState(false);
-
-  // Display fields show combined name instead of separate fields
+console.log(profileErrors)
   const displayFields = [
     { label: "Name", value: user?.name, field: "name" },
     { label: "Email", value: user?.email, field: "email" },
@@ -52,7 +50,6 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
     { label: "Address", value: user?.address, field: "address" },
   ] as const;
 
-  // Edit fields include firstname and lastname but not name
   const editFields = [
     {
       label: "First Name",
