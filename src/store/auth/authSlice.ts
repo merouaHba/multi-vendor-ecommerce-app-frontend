@@ -104,6 +104,7 @@ const authSlice = createSlice({
     builder.addCase(actGetUser.fulfilled, (state, action) => {
       state.loading = "succeeded";
       state.user = action.payload.user;
+      state.accessToken = action.payload.accessToken;
     });
     builder.addCase(actGetUser.rejected, (state, action) => {
       state.loading = "failed";
