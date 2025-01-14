@@ -1,4 +1,4 @@
-import { actAuthLogout, actSetUser } from "@/store/auth/authSlice";
+import { actAuthLogout, actSetUser, authLogout } from "@/store/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -6,6 +6,12 @@ import { useSearchParams } from 'react-router-dom';
 
 const useHeader = () => {
     const dispatch = useAppDispatch();
+    const token = localStorage.getItem("accessToken")
+    useEffect(() => {
+      if ( token=== null) {
+        dispatch(authLogout())
+      }
+    },[token,dispatch]);
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
   
