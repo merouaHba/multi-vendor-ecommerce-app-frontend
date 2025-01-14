@@ -1,22 +1,36 @@
 import  Cookies  from 'js-cookie';
 import { authLogin, actAuthLogout } from "@/store/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useSearchParams } from 'react-router-dom';
+import axios from "@/services/api/axios.config";
 
 const useHeader = () => {
-  const CheckCookies = () => {
+    const dispatch = useAppDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    const CheckCookies = () => {
     
-    const accessToken = Cookies.get("accessToken");
-    const user = Cookies.get("user");
-    if(accessToken && user){
-      authLogin({ accessToken, user })
-      Cookies.remove("accessToken");
-      Cookies.remove("user");
+      const accessToken = Cookies.get("accessToken");
+      const user = Cookies.get("user");
+      if (accessToken && user) {
+        authLogin({ accessToken, user })
+        Cookies.remove("accessToken");
+        Cookies.remove("user");
+      }
     }
-  }
-  CheckCookies()
-  const dispatch = useAppDispatch();
+const cookieSet = searchParams.get('cookieSet')
+    if (cookieSet === "true") {
+      const setCookies = async () => {
+        await axios.get('/auth/set-cookie')
+    
+        CheckCookies()
+        setSearchParams({  });
+      }
+      setCookies()
+}
+  }, [])
   const { error, loading, accessToken, user } = useAppSelector(
     (state) => state.auth
   );
