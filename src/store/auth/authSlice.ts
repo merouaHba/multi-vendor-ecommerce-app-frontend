@@ -34,7 +34,8 @@ const authSlice = createSlice({
     },
     SetUser: (state, action) => {
       if (action.payload.user) state.user = action.payload.user;
-     if (action.payload.accessToken) state.accessToken = action.payload.accessToken;
+      if (action.payload.accessToken)
+        state.accessToken = action.payload.accessToken;
     },
     resetUI: (state) => {
       state.loading = "idle";
@@ -82,7 +83,7 @@ const authSlice = createSlice({
     // logout
     builder.addCase(actAuthLogout.pending, (state) => {
       state.loading = "pending";
-      state.error = null;      
+      state.error = null;
     });
     builder.addCase(actAuthLogout.fulfilled, (state) => {
       state.loading = "succeeded";
@@ -105,6 +106,7 @@ const authSlice = createSlice({
       state.loading = "succeeded";
       state.user = action.payload.user;
       state.accessToken = action.payload.accessToken;
+      localStorage.setItem("accessToken", action.payload.accessToken);
     });
     builder.addCase(actGetUser.rejected, (state, action) => {
       state.loading = "failed";
