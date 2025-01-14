@@ -8,13 +8,16 @@ import { useSearchParams } from "react-router-dom";
 
 const useHeader = () => {
   const dispatch = useAppDispatch();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
     const getUser = async() => {
       
       const cookieSet = searchParams.get("cookieSet");
       if (cookieSet === 'true') {
-               await dispatch(actGetUser()).unwrap();
+      
+        await dispatch(actGetUser()).unwrap()
+          setSearchParams({});
+        
   
       } else {
            const accessToken = getCookie("accessToken");
