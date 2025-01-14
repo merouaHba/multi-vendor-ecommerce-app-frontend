@@ -10,7 +10,7 @@ import axios from "@/services/api/axios.config";
 
 const useRegister = (role: "user" | "seller") => {
   const dispatch = useAppDispatch();
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
   
   const [email, setEmail] = useState("");
 
@@ -160,13 +160,13 @@ const useRegister = (role: "user" | "seller") => {
       };
       if (cookieSet === "true") {
         getError();
-        searchParams.delete("cookieSet");
+        setSearchParams({});
       }
 
       return () => {
         dispatch(resetUI());
       };
-    }, [searchParams, dispatch]);
+    }, [searchParams, dispatch, setSearchParams]);
 
   return {
     loading,
