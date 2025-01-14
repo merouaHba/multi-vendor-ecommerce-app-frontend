@@ -10,7 +10,7 @@ const useHeader = () => {
     const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
-    const CheckCookies = () => {
+    const CheckCookies = async() => {
     
       const accessToken = Cookies.get("accessToken");
       const user = Cookies.get("user");
@@ -24,8 +24,7 @@ const cookieSet = searchParams.get('cookieSet')
     if (cookieSet === "true") {
       const setCookies = async () => {
         await axios.get('/auth/set-cookie')
-    
-        CheckCookies()
+        await CheckCookies();
         setSearchParams({  });
       }
       setCookies()
