@@ -37,6 +37,8 @@ const authSlice = createSlice({
       if (action.payload.user) state.user = action.payload.user;
       if (action.payload.accessToken)
         state.accessToken = action.payload.accessToken;
+            localStorage.setItem("accessToken", action.payload.accessToken);
+
     },
     resetUI: (state) => {
       state.loading = "idle";
