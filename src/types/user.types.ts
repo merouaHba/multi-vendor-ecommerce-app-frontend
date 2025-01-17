@@ -8,18 +8,15 @@ export type TUser = {
   mobile?: string;
   profilePicture?: string;
   address?: string;
-};
-export type TSeller= {
-  storeName: string;
-  storeDetails: {
+  storeName?: string;
+  storeDetails?: {
     state: string;
-    city: string;
+    city?: string;
     country: string;
     postalCode: string;
   };
-  email: string;
-  mobile: string;
 };
+
 
 
 export type UserRole = "user" | "seller" | "admin";

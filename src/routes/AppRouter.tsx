@@ -11,7 +11,7 @@ import Error from "@/pages/Error";
 // Layouts
 const MainLayout = lazy(() => import("@/layouts/MainLayout"));
 const DashboardLayout = lazy(() => import("@/layouts/ProfileLayout"));
-// const SellerLayout = lazy(() => import("@/layouts/SellerLayout"));
+const SellerLayout = lazy(() => import("@/layouts/SellerDashboardLayout"));
 
 // Customer-facing Pages
 const Home = lazy(() => import("@/pages/customer-facing/Home"));
@@ -64,7 +64,6 @@ const ProfilePage = lazy(() => import("@/pages/dashboard/Profile"));
 // const UserSettingsPage = lazy(() => import("@/pages/dashboard/SettingsPage"));
 
 // Seller Pages
-const SellerDashboard = lazy(() => import("@/pages/seller/Dashboard"));
 const SellerLogin = lazy(() => import("@/pages/seller/auth/Login"));
 const SellerRegistration = lazy(() => import("@/pages/seller/auth/Register"));
 // const ProductForm = lazy(() => import("@/pages/seller/product/Update"));
@@ -75,6 +74,7 @@ const OrderDetails = lazy(() => import("@/pages/seller/orders/orderDetails"));
 
 // Route Guard Component
 const ProtectedRoute = lazy(() => import("@/components/auth/ProtectedRoute"));
+const GuestGuard = lazy(() => import("@/components/auth/GuestGuard"));
 
 // Loader Component
 const SuspenseLoader = ({ children }: { children: React.ReactNode }) => (
@@ -95,7 +95,9 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <SuspenseLoader>
+        <GuestGuard>
         <MainLayout />
+        </GuestGuard>
       </SuspenseLoader>
     ),
     errorElement: <Error />,
@@ -322,10 +324,10 @@ const router = createBrowserRouter([
     path: "dashboard",
     element: (
       <SuspenseLoader>
-          <ProtectedRoute role="user">
+        <ProtectedRoute role="user">
           <DashboardLayout />
-      </ProtectedRoute>
-        </SuspenseLoader>
+        </ProtectedRoute>
+      </SuspenseLoader>
     ),
     errorElement: <Error />,
     children: [
@@ -382,8 +384,8 @@ const router = createBrowserRouter([
     path: "seller",
     element: (
       <SuspenseLoader>
-          <Outlet />
-        </SuspenseLoader>
+        <Outlet />
+      </SuspenseLoader>
     ),
     errorElement: <Error />,
     children: [
@@ -407,11 +409,23 @@ const router = createBrowserRouter([
         path: "dashboard",
         element: (
           <PageSuspenseFallback>
-           <ProtectedRoute role="seller">
-            <SellerDashboard />
-      </ProtectedRoute>
+            <ProtectedRoute role="seller">
+              <SellerLayout />
+            </ProtectedRoute>
           </PageSuspenseFallback>
         ),
+        children: [
+          {
+            path: "orders",
+            element: (
+              <PageSuspenseFallback>
+                <>
+                </>
+                {/* <SellerOrders /> */}
+              </PageSuspenseFallback>
+            ),
+          },
+        ],
       },
       // {
       //   path: "products",

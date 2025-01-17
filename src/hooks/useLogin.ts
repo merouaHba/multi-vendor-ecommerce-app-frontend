@@ -56,7 +56,11 @@ const useLogin = (role: "user" | "seller") => {
     dispatch(actAuthLogin({ role, email, password, rememberMe }))
       .unwrap()
       .then(() => {
-        navigate("/");
+        if (role === "user") {
+          navigate("/");
+        }else {
+          navigate("/seller/dashboard");
+        }
       })
       .catch((error) => {
         if (error === "Account not verified") {

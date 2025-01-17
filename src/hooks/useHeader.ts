@@ -2,10 +2,11 @@ import { actAuthLogout, actSetUser, authLogout } from "@/store/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const useHeader = () => {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const token = localStorage.getItem("accessToken")
     useEffect(() => {
       if ( token=== null) {
@@ -19,8 +20,7 @@ const useHeader = () => {
     
     if (cookieSet === "true") {
                 dispatch(actSetUser());
-
-
+                setSearchParams({})
     }
   }, [searchParams, setSearchParams, dispatch]);
   const { error, loading, accessToken, user } = useAppSelector(
@@ -30,9 +30,16 @@ const useHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const logout = async () => {
+    const role = user?.role;
     dispatch(actAuthLogout())
       .unwrap()
-      .then(() => {})
+      .then(() => {
+        if (role === "seller") {
+          navigate("/seller/login");
+        }else{
+          navigate("/login");
+        }
+      })
       .catch((error: string) => {
         toast.error(error, {
           position: "top-right",
