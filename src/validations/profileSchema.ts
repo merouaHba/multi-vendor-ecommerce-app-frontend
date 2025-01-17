@@ -1,4 +1,5 @@
 import { z } from "zod";
+import validator from "validator";
 
 const profileSchema = z.object({
   firstname: z.string().min(2, "First name must be at least 2 characters"),
@@ -11,11 +12,10 @@ const profileSchema = z.object({
     .superRefine((val, ctx) => {
       if (!val) return; 
 
-      if (!/^(\d{1,4})\d{6,14}$/.test(val)) {
+      if (!validator.isMobilePhone(val, "any", { strictMode: true })) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message:
-            "Mobile number not valid",
+          message: "Mobile number not valid",
         });
       }
     }),
