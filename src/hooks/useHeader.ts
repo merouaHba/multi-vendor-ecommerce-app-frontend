@@ -1,6 +1,6 @@
 import { actAuthLogout, actSetUser, authLogout } from "@/store/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -14,7 +14,7 @@ const useHeader = () => {
       }
     },[token,dispatch]);
   const [searchParams, setSearchParams] = useSearchParams();
-  useEffect(() => {
+  useLayoutEffect(() => {
   
     const cookieSet = searchParams.get('cookieSet')
     
