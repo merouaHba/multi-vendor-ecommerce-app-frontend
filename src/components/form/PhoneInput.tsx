@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState,  useLayoutEffect } from "react";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -30,33 +30,31 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [localPhoneNumber, setLocalPhoneNumber] = useState("");
 
-  // Filter countries based on search query
-  const filteredCountries = countries.filter(
-    (country) =>
-      country.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      country.phonecode.toString().includes(searchQuery) ||
-      `+${country.phonecode}`.includes(searchQuery)
-  );
-
-  // Update the combined phone number whenever country or local number changes
-  useEffect(() => {
-    if (selectedCountry && localPhoneNumber) {
-      const fullNumber = `${
-        selectedCountry.phonecode
-      }${localPhoneNumber.replace(/\D/g, "")}`;
-      onChange(fullNumber);
-    }
-  }, [selectedCountry, localPhoneNumber, onChange]);
-
-  // Initialize local phone number from value prop
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (selectedCountry && value) {
-      const countryCode = selectedCountry.phonecode.toString();
+      const countryCode = `+${selectedCountry.phonecode}`;
       if (value.startsWith(countryCode)) {
         setLocalPhoneNumber(value.slice(countryCode.length));
       }
     }
-  }, []);
+  }, [value, selectedCountry]);
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value.replace(/\D/g, "");
+    setLocalPhoneNumber(input);
+    if (selectedCountry) {
+      onChange(`+${selectedCountry.phonecode}${input}`);
+    }
+  };
+
+  const handleCountryChange = (value: string) => {
+    const country = countries.find((c) => c.id.toString() === value);
+    if (country) {
+      onCountryChange(country);
+      // Keep the local phone number when changing country code
+      onChange(`+${country.phonecode}${localPhoneNumber}`);
+    }
+  };
 
   return (
     <div className="space-y-2">
@@ -64,10 +62,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       <div className="flex gap-2">
         <Select
           value={selectedCountry?.id.toString()}
-          onValueChange={(value) => {
-            const country = countries.find((c) => c.id.toString() === value);
-            if (country) onCountryChange(country);
-          }}
+          onValueChange={handleCountryChange}
         >
           <SelectTrigger
             className={`w-[115px] ${
@@ -98,21 +93,29 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
               />
             </div>
             <div className="max-h-[300px] overflow-auto">
-              {filteredCountries.map((country) => (
-                <SelectItem
-                  key={country.id}
-                  value={country.id.toString()}
-                  className="flex items-center py-2.5 px-3 cursor-pointer hover:bg-gray-50"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">{country.emoji}</span>
-                    <span className="font-medium">+{country.phonecode}</span>
-                    <span className="text-sm text-gray-500 truncate">
-                      {country.name}
-                    </span>
-                  </div>
-                </SelectItem>
-              ))}
+              {countries
+                .filter(
+                  (country) =>
+                    country.name
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase()) ||
+                    country.phonecode.toString().includes(searchQuery)
+                )
+                .map((country) => (
+                  <SelectItem
+                    key={country.id}
+                    value={country.id.toString()}
+                    className="flex items-center py-2.5 px-3 cursor-pointer hover:bg-gray-50"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{country.emoji}</span>
+                      <span className="font-medium">+{country.phonecode}</span>
+                      <span className="text-sm text-gray-500 truncate">
+                        {country.name}
+                      </span>
+                    </div>
+                  </SelectItem>
+                ))}
             </div>
           </SelectContent>
         </Select>
@@ -121,10 +124,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
           <Input
             type="tel"
             value={localPhoneNumber}
-            onChange={(e) => {
-              const input = e.target.value.replace(/\D/g, "");
-              setLocalPhoneNumber(input);
-            }}
+            onChange={handlePhoneChange}
             className={`w-full ${error ? "border-red-500" : "border-gray-200"}`}
             placeholder="Enter phone number"
           />
@@ -132,7 +132,6 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       </div>
 
       {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
-
     </div>
   );
 };

@@ -10,6 +10,10 @@ const RegistrationConfirmation = ({
   resetRegistration,
 }: RegistrationConfirmationProps) => {
   const navigate = useNavigate();
+  const handleReset = () => {
+    resetRegistration();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-lg">
@@ -48,7 +52,7 @@ const RegistrationConfirmation = ({
               <p className="text-xs text-gray-500">
                 If you entered the wrong email, you can also{" "}
                 <button
-                  onClick={resetRegistration}
+                  onClick={handleReset}
                   className="text-blue-600 hover:text-blue-500"
                 >
                   go back and try again

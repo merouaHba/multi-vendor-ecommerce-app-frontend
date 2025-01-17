@@ -13,12 +13,9 @@ import FormInput from "@/components/form/FormInput";
 import PhoneInput from "@/components/form/PhoneInput";
 import RegistrationConfirmation from "@/components/form/RegistrationConfirmation";
 import StepIndicator from "@/components/vendor/StepIndicator";
-import  useRegisterSeller  from "@/hooks/useRegisterSeller";
-import { useCountryData, Country, State, City } from '@/hooks/useCountry';
-import { useEffect, useState } from "react";
+import useRegisterSeller from "@/hooks/useRegisterSeller";
 import { LocationSelector } from "@/components/form/LocationSelector";
-
-
+import { FormEventHandler } from "react";
 
 const SellerRegister = () => {
   const {
@@ -30,112 +27,19 @@ const SellerRegister = () => {
     formErrors,
     email,
     resetRegistration,
-    submitForm,
     register,
     setValue,
     getValues,
-    handleSubmit,
-    handleNext,
-    handleBack,
+    handleSubmitForm,
+    handleStepNext,
+    handleStepBack,
+    selectedCountry,
+    selectedState,
+    selectedCity,
+    handleLocationChange,
+    selectedCountryPhoneCode,
+    setSelectedCountryPhoneCode,
   } = useRegisterSeller();
-
-  const { userCountry, countries } = useCountryData();
-  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
-  const [selectedState, setSelectedState] = useState<State | null>(null);
-  const [selectedCity, setSelectedCity] = useState<City | null>(null);
-  // Initialize location values from form state
-  useEffect(() => {
-    const formCountry = getValues("storeDetails.country");
-    const formState = getValues("storeDetails.state");
-    const formCity = getValues("storeDetails.city");
-
-    // Restore country selection
-    if (formCountry && !selectedCountry) {
-      const country = countries.find((c) => c.name === formCountry);
-      if (country) {
-        setSelectedCountry(country);
-
-        // Restore state selection
-        if (formState && country.states) {
-          const state = country.states.find((s: State) => s.name === formState);
-          if (state) {
-            setSelectedState(state);
-
-            // Restore city selection
-            if (formCity && state.cities) {
-              const city = state.cities.find((c: City) => c.name === formCity);
-              if (city) {
-                setSelectedCity(city);
-              }
-            }
-          }
-        }
-      }
-    }
-  }, [getValues, countries, currentStep]);
-
-  // Set default country based on user's location
-  useEffect(() => {
-    if (userCountry && !selectedCountry && !getValues("storeDetails.country")) {
-      setSelectedCountry(userCountry);
-      setValue("storeDetails.country", userCountry.name);
-    }
-  }, [userCountry, selectedCountry, setValue, getValues]);
-
-  const handleLocationChange = {
-    country: (country: Country | null) => {
-      setSelectedCountry(country);
-      setSelectedState(null);
-      setSelectedCity(null);
-      setValue("storeDetails.country", country?.name || "", {
-        shouldValidate: true,
-      });
-      setValue("storeDetails.state", "", { shouldValidate: true });
-      setValue("storeDetails.city", "", { shouldValidate: true });
-    },
-    state: (state: State | null) => {
-      setSelectedState(state);
-      setSelectedCity(null);
-      setValue("storeDetails.state", state?.name || "", {
-        shouldValidate: true,
-      });
-      setValue("storeDetails.city", "", { shouldValidate: true });
-    },
-    city: (city: City | null) => {
-      setSelectedCity(city);
-      setValue("storeDetails.city", city?.name || "", { shouldValidate: true });
-    },
-  };
-
-  // Extend handleNext to ensure location data is saved
-  const handleStepNext = async () => {
-    // Save current location data explicitly before moving to next step
-    if (selectedCountry) {
-      setValue("storeDetails.country", selectedCountry.name);
-      if (selectedState) {
-        setValue("storeDetails.state", selectedState.name);
-        if (selectedCity) {
-          setValue("storeDetails.city", selectedCity.name);
-        }
-      }
-    }
-    handleNext();
-  };
-
-  // Extend handleBack to ensure location data is saved
-  const handleStepBack = () => {
-    // Save current location data explicitly before moving to previous step
-    if (selectedCountry) {
-      setValue("storeDetails.country", selectedCountry.name);
-      if (selectedState) {
-        setValue("storeDetails.state", selectedState.name);
-        if (selectedCity) {
-          setValue("storeDetails.city", selectedCity.name);
-        }
-      }
-    }
-    handleBack();
-  };
 
 
   if (accessToken && user) {
@@ -199,12 +103,12 @@ const SellerRegister = () => {
               <CardContent>
                 <div className="space-y-6">
                   <FormInput
-                    id={register("storeDetails.address").name}
+                    id={register("storeDetails.street").name}
                     label="Street Address"
-                    {...register("storeDetails.address", {
+                    {...register("storeDetails.street", {
                       required: "Street address is required",
                     })}
-                    error={formErrors.storeDetails?.address?.message}
+                    error={formErrors.storeDetails?.street?.message}
                     placeholder="123 Main St"
                     className="text-lg"
                   />
@@ -257,10 +161,13 @@ const SellerRegister = () => {
             />
             <PhoneInput
               value={getValues("mobile") as string}
-              onChange={(value) => setValue("mobile", value)}
+              onChange={(value) => setValue("mobile", value, { 
+                shouldValidate: true,
+                shouldDirty: true 
+              })}
               error={formErrors.mobile?.message}
-              selectedCountry={selectedCountry}
-              onCountryChange={setSelectedCountry}
+              selectedCountry={selectedCountryPhoneCode}
+              onCountryChange={setSelectedCountryPhoneCode}
             />
           </div>
         );
@@ -340,7 +247,7 @@ const SellerRegister = () => {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit(submitForm)} className="space-y-6">
+          <form onSubmit={handleSubmitForm as FormEventHandler} className="space-y-6">
             {renderStepContent()}
 
             <div className="flex justify-between space-x-4">

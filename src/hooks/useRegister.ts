@@ -34,8 +34,8 @@ const useRegister = (role: "user" | "seller") => {
       storeDetails:
         role === "seller"
           ? {
-              address: "",
-              city: "",
+              street: "",
+              // city: "",
               state: "",
               postalCode: "",
               country: "",
@@ -46,6 +46,7 @@ const useRegister = (role: "user" | "seller") => {
 
   const submitForm: SubmitHandler<signUpType> = async (data) => {
     try {
+      console.log(data)
       const {
         firstname,
         lastname,
@@ -110,8 +111,9 @@ const useRegister = (role: "user" | "seller") => {
   };
 
   const resetRegistration = () => {
-    dispatch(resetUI());
-    reset();
+      dispatch(resetUI());
+      reset(); 
+      setEmail("");
   };
 
   const GoogleOAuth = async () => {
@@ -173,6 +175,7 @@ const useRegister = (role: "user" | "seller") => {
     user,
     formErrors,
     email,
+    reset,
     getValues,
     setValue,
     trigger,

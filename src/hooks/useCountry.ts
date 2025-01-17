@@ -1,6 +1,7 @@
 // src/hooks/useCountryData.ts
 import { useState, useMemo, useEffect } from 'react';
 import countriesData from '@/data/countries.json';
+import axios from 'axios';
 
 export interface City {
   id: number;
@@ -37,9 +38,8 @@ export const useCountryData = (): UseCountryDataReturn => {
   useEffect(() => {
     const getUserCountry = async () => {
       try {
-        const response = await fetch('https://ipapi.co/json/');
-        const data = await response.json();
-        const country = countries.find(c => c.iso2 === data.country_code);
+        const {data} = await axios.get('http://ip-api.com/json/');
+        const country = countries.find(c => c.name === data.country);
         if (country) {
           setUserCountry(country);
         }

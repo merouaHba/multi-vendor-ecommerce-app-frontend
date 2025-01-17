@@ -1,39 +1,40 @@
 import { z } from "zod";
+import validator from "validator";
 
 const storeDetailsSchema = z.object({
-  address: z
+  street: z
     .string()
-    .min(1, { message: "Address is required" })
-    .max(200, { message: "Address must be less than 200 characters" }),
-  
+    .min(1, { message: "Street Address is required" })
+    .max(200, { message: "Street Address must be less than 200 characters" }),
+
   city: z
     .string()
-    .min(1, { message: "City is required" })
     .max(100, { message: "City must be less than 100 characters" })
-    .regex(/^[a-zA-Z\s-]+$/, {
+    .regex(/^[a-zA-ZÀ-ÖØ-öø-ÿ\s-]+$/, {
       message: "City should only contain letters, spaces, and hyphens",
-    }),
-  
+    })
+    .optional(),
+
   state: z
     .string()
     .min(1, { message: "State is required" })
     .max(100, { message: "State must be less than 100 characters" })
-    .regex(/^[a-zA-Z\s-]+$/, {
+    .regex(/^[a-zA-ZÀ-ÖØ-öø-ÿ\s-]+$/, {
       message: "State should only contain letters, spaces, and hyphens",
     }),
-  
+
   postalCode: z
     .string()
     .min(1, { message: "Postal code is required" })
     .regex(/^\d+$/, { message: "Postal code must contain only numbers" })
     .min(5, { message: "Postal code must be at least 5 digits" })
     .max(10, { message: "Postal code must be less than 10 digits" }),
-  
+
   country: z
     .string()
     .min(1, { message: "Country is required" })
     .max(100, { message: "Country must be less than 100 characters" })
-    .regex(/^[a-zA-Z\s-]+$/, {
+    .regex(/^[a-zA-ZÀ-ÖØ-öø-ÿ\s-]+$/, {
       message: "Country should only contain letters, spaces, and hyphens",
     }),
 });
@@ -78,9 +79,12 @@ const signUpSchema = z
     mobile: z
       .string()
       .min(1, { message: "mobile number is required" })
-      .regex(/^\+?[1-9]\d{1,14}$/, {
-        message: "Please enter a valid mobile number",
-      })
+      .refine(
+        (value) => validator.isMobilePhone(value, "any", { strictMode: true }),
+        {
+          message: "Please enter a valid mobile number with country code",
+        }
+      )
       .optional(),
 
     password: z
