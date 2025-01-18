@@ -14,15 +14,15 @@ const useHeader = () => {
       }
     },[token,dispatch]);
   const [searchParams, setSearchParams] = useSearchParams();
-  useLayoutEffect(() => {
+  // useLayoutEffect(() => {
   
-    const cookieSet = searchParams.get('cookieSet')
+  //   const cookieSet = searchParams.get('cookieSet')
     
-    if (cookieSet === "true") {
-                dispatch(actSetUser());
-                setSearchParams({})
-    }
-  }, [searchParams, setSearchParams, dispatch]);
+  //   if (cookieSet === "true") {
+  //               dispatch(actSetUser());
+  //               setSearchParams({})
+  //   }
+  // }, [searchParams, setSearchParams, dispatch]);
   const { error, loading, accessToken, user } = useAppSelector(
     (state) => state.auth
   );
