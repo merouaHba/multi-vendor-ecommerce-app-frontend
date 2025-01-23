@@ -1,8 +1,8 @@
-import { actAuthLogout, actSetUser, authLogout } from "@/store/auth/authSlice";
+import { actAuthLogout, authLogout } from "@/store/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const useHeader = () => {
     const dispatch = useAppDispatch();
@@ -13,16 +13,7 @@ const useHeader = () => {
         dispatch(authLogout())
       }
     },[token,dispatch]);
-  const [searchParams, setSearchParams] = useSearchParams();
-  useLayoutEffect(() => {
-  
-    const cookieSet = searchParams.get('cookieSet')
-    
-    if (cookieSet === "true") {
-                dispatch(actSetUser());
-                setSearchParams({})
-    }
-  }, [searchParams, setSearchParams, dispatch]);
+
   const { error, loading, accessToken, user } = useAppSelector(
     (state) => state.auth
   );
