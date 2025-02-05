@@ -26,7 +26,7 @@ const actUpdateUser = createAsyncThunk(
     const { rejectWithValue } = thunk;
 
     try {
-      const res = await axios.put<TResponse>("/users/user/", formData);
+      const res = await axios.put<TResponse>("/users/", formData);
       return res.data;
     } catch (error) {
       return rejectWithValue(axiosErrorHandler(error));

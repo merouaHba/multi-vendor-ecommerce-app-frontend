@@ -13,7 +13,7 @@ const actGetUser = createAsyncThunk(
     const { rejectWithValue } = thunk;
 
     try {
-      const res = await axios.get<TResponse>("/users/user/");
+      const res = await axios.get<TResponse>("/users/user-info/");
       return res.data;
     } catch (error) {
       return rejectWithValue(axiosErrorHandler(error));
