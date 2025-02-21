@@ -2,11 +2,11 @@
     "rewrites": [
         {
             "source": "/login",
-            "destination": "/"
+            "destination": "https://multi-vendor-ecommerce-app-frontend-3b3zespfb.vercel.app/login"
         },
         {
             "source": "/",
-            "destination": "/"
+            "destination": "https://multi-vendor-ecommerce-app-frontend-3b3zespfb.vercel.app/"
         }
     ]
 }
