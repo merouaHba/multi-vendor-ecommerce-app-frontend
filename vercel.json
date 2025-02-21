@@ -1,8 +1,8 @@
 {
     "rewrites": [
         {
-            "source": "/:path*",
-            "destination": "https://multi-vendor-ecommerce-app-frontend-3b3zespfb.vercel.app/:path*"
+            "source": "/*",
+            "destination": "/"
         }
     ]
 }
